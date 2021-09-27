@@ -53,8 +53,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0' // retrofit gson组件
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0' // retrofit 添加了对RxJava2的支持
 
-    implementation 'com.dyhdyh.loadingbar2:loadingbar:2.0.1'
-
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

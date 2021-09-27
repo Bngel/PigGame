@@ -6,5 +6,5 @@ interface DaoEvent {
 
     fun <T> success(data: DefaultData<T>)
 
-    fun failure()
+    fun <T> failure(data: DefaultData<T>?)
 }

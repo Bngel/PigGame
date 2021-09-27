@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xuexiang.xui.widget.layout.XUILinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
+    app:xui_borderColor="@color/black"
+    app:xui_outerNormalColor="@color/black"
+    app:xui_showBorderOnlyBeforeL="true">
+
+    <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+        android:id="@+id/game_id_view_game_card"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/color_game_id"
+        app:sCenterBottomTextColor="@color/black"
+        app:sCenterBottomTextSize="11sp"
+        app:sCenterBottomTextString=""
+        app:sCenterTextColor="@color/black"
+        app:sCenterTextSize="12sp"
+        app:sCenterTextString="房间ID"
+        app:sCenterTopTextIsBold="true"
+        app:sDividerLineType="none"
+        app:sUseRipple="false"/>
+
+    <com.xuexiang.xui.widget.layout.XUILinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="#66ccff"
+        android:orientation="vertical">
+
+        <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:layout_margin="10dp"
+            app:sUseRipple="false"
+            app:sDividerLineType="none"
+            android:gravity="clip_vertical"
+            app:sBackgroundDrawableRes="@drawable/pig"/>
+
+        <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+            android:id="@+id/join_game_view_game_card"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal"
+            android:text="加入房间"
+            style="@style/SuperButton.Blue"/>
+    </com.xuexiang.xui.widget.layout.XUILinearLayout>
+
+</com.xuexiang.xui.widget.layout.XUILinearLayout>

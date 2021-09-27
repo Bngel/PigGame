@@ -9,13 +9,17 @@
     tools:ignore="MissingDefaultResource">
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+        android:id="@+id/title_activity_lobby"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="20dp"
+        app:sCenterBottomTextSize="10sp"
+        app:sRightBottomTextSize="13sp"
         app:sCenterTextString="游戏大厅"
-        app:sCenterTextSize="22sp"
-        app:sCenterTextColor="@color/black"/>
+        app:sCenterTextSize="20sp"
+        app:sCenterTextColor="@color/black"
+        app:sUseRipple="false"/>
 
     <com.xuexiang.xui.widget.layout.XUILinearLayout
         android:layout_width="match_parent"
@@ -23,93 +27,30 @@
         android:layout_weight="6"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <ImageView
+            android:id="@+id/prev_games_activity_lobby"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_weight="1"
-            android:layout_margin="40dp">
+            android:layout_margin="10dp"
+            android:src="@drawable/left"/>
 
-            <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:sCenterTextString="房间号: 888"
-                app:sCenterTextColor="@color/black"
-                app:sCenterTextSize="18sp"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
-                android:background="#66ccff"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <com.xuexiang.xui.widget.layout.XUILinearLayout
+            android:id="@+id/game_cards_activity_lobby"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:layout_margin="40dp">
+            android:layout_weight="25"
+            android:orientation="horizontal">
 
-            <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:sCenterTextString="房间号: 888"
-                app:sCenterTextColor="@color/black"
-                app:sCenterTextSize="18sp"/>
+        </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
-                android:background="#66ccff"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <ImageView
+            android:id="@+id/next_games_activity_lobby"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_weight="1"
-            android:layout_margin="40dp">
-
-            <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:sCenterTextString="房间号: 888"
-                app:sCenterTextColor="@color/black"
-                app:sCenterTextSize="18sp"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
-                android:background="#66ccff"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:layout_margin="40dp">
-
-            <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:sCenterTextString="房间号: 888"
-                app:sCenterTextColor="@color/black"
-                app:sCenterTextSize="18sp"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
-                android:background="#66ccff"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            android:layout_margin="10dp"
+            android:src="@drawable/right"/>
 
     </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
@@ -117,26 +58,28 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="10dp"
+        android:paddingLeft="200dp"
+        android:paddingRight="200dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+        <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+            android:id="@+id/create_game_activity_lobby"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:sCenterTextString="创建房间"
-            app:sCenterTextSize="22sp"
-            app:sCenterTextColor="@color/black"
-            app:sCenterViewGravity="right_center"/>
+            android:layout_margin="10dp"
+            android:text="创建房间"
+            style="@style/SuperButton.Blue"/>
 
-        <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+        <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+            android:id="@+id/join_game_activity_lobby"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:sCenterTextString="加入房间"
-            app:sCenterTextSize="22sp"
-            app:sCenterTextColor="@color/black"
-            app:sCenterViewGravity="left_center"/>
+            android:layout_margin="10dp"
+            android:text="加入房间"
+            style="@style/SuperButton.Blue"/>
     </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
 </com.xuexiang.xui.widget.layout.XUILinearLayout>

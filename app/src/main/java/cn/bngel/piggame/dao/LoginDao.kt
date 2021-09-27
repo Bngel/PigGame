@@ -17,7 +17,7 @@ interface LoginDao {
     fun postUserLogin(
         @Field("student_id") studentId: String,
         @Field("password") password: String
-    ): Call<DefaultData<PostUserLogin>>
+    ): Call<PostUserLogin>
 
     companion object {
         fun create(): LoginDao {

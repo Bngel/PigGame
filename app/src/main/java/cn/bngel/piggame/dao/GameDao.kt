@@ -1,5 +1,6 @@
 package cn.bngel.piggame.dao
 
+import cn.bngel.piggame.dao.getGameIndex.GetGameIndex
 import cn.bngel.piggame.dao.getGameUUID.GetGameUUID
 import cn.bngel.piggame.dao.getGameUUIDLast.GetGameUUIDLast
 import cn.bngel.piggame.dao.postGame.PostGame
@@ -15,19 +16,20 @@ import java.util.concurrent.TimeUnit
 
 interface GameDao {
 
-    @POST("game")
+    @FormUrlEncoded
+    @POST("game/")
     fun postGame(
-        @Field("private") private: Boolean,
+        @Field("private") private: Boolean?,
         @Header("Authorization") token: String
     ): Call<DefaultData<PostGame>>
 
-    @POST("game/:{uuid}")
+    @POST("game/{uuid}")
     fun postGameUUID(
         @Path("uuid") uuid: String,
         @Header("Authorization") token: String
     ): Call<DefaultData<PostGameUUID>>
 
-    @PUT("game/:{uuid}")
+    @PUT("game/{uuid}")
     fun putGameUUID(
         @Query("type") type: Int,
         @Query("card") card: String,
@@ -35,13 +37,13 @@ interface GameDao {
         @Header("Authorization") token: String
     ): Call<DefaultData<PutGameUUID>>
 
-    @GET("game/:{uuid}")
+    @GET("game/{uuid}")
     fun getGameUUID(
         @Path("uuid") uuid: String,
         @Header("Authorization") token: String
     ): Call<DefaultData<GetGameUUID>>
 
-    @GET("game/:{uuid}/last")
+    @GET("game/{uuid}/last")
     fun getGameUUIDLast(
         @Path("uuid") uuid: String,
         @Header("Authorization") token: String
@@ -52,7 +54,7 @@ interface GameDao {
         @Query("page_size") page_size: String,
         @Query("page_num") page_num: String,
         @Header("Authorization") token: String
-    ): Call<DefaultData<GetGameUUIDLast>>
+    ): Call<DefaultData<GetGameIndex>>
 
     companion object {
         fun create(): GameDao {
