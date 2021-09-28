@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SuperButton.PigButton">
+        <item name="sGradientStartColor">#AE6D47</item>
+        <item name="sGradientCenterColor">#C4945D</item>
+        <item name="sGradientEndColor">#AE6D47</item>
+        <item name="sGradientAngle">90dp</item>
+        <item name="sSelectorPressedColor">#559F4F00</item>
+        <item name="android:textColor">#513D1F</item>
+    </style>
+</resources>

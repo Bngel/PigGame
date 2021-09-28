@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/game_bk"
     tools:ignore="MissingDefaultResource">
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
@@ -17,6 +18,7 @@
         app:sCenterBottomTextSize="10sp"
         app:sRightBottomTextSize="13sp"
         app:sCenterTextString="游戏大厅"
+        app:sDividerLineType="none"
         app:sCenterTextSize="20sp"
         app:sCenterTextColor="@color/black"
         app:sUseRipple="false"/>
@@ -69,8 +71,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:text="创建房间"
-            style="@style/SuperButton.Blue"/>
+            style="@style/SuperButton.PigButton"
+            android:text="创建房间"/>
 
         <com.xuexiang.xui.widget.textview.supertextview.SuperButton
             android:id="@+id/join_game_activity_lobby"
@@ -79,7 +81,7 @@
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:text="加入房间"
-            style="@style/SuperButton.Blue"/>
+            style="@style/SuperButton.PigButton"/>
     </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
 </com.xuexiang.xui.widget.layout.XUILinearLayout>

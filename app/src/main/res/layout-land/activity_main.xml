@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/game_bk"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
@@ -13,64 +14,54 @@
         android:layout_height="0dp"
         android:layout_weight="5"
         android:gravity="center_horizontal|bottom"
-        app:sCenterTextString="游戏标题"
-        app:sCenterTextColor="@color/black"
+        app:sCenterTextString="猪尾巴"
+        app:sCenterTextColor="#503C2E"
         app:sCenterTextSize="40sp"
+        app:sDividerLineType="none"
         app:sCenterTextIsBold="true"
         app:sUseRipple="false"/>
 
-    <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
         android:id="@+id/online_btn_activity_main"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
-        app:sCenterTextString="联机对战"
-        app:sCenterTextColor="@color/black"
-        app:sUseShape="true"
-        app:sUseRipple="true"
-        app:sShapeCornersRadius="20dp"
-        app:sShapeStrokeColor="#66ccff"
-        app:sShapeSelectorNormalColor="#66ccff"
-        app:sShapeSelectorPressedColor="#00bbff"
+        app:sCornersRadius="30dp"
+        android:text="联机对战"
+        style="@style/SuperButton.PigButton"
+        android:textColor="#513D1F"
         app:sShapeStrokeWidth="2dp"/>
 
-    <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
         android:id="@+id/friends_btn_activity_main"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
-        app:sCenterTextString="双人对战"
-        app:sCenterTextColor="@color/black"
-        app:sUseShape="true"
-        app:sUseRipple="true"
-        app:sShapeCornersRadius="20dp"
-        app:sShapeStrokeColor="#66ccff"
-        app:sShapeSelectorNormalColor="#66ccff"
-        app:sShapeSelectorPressedColor="#00bbff"
+        app:sCornersRadius="30dp"
+        android:text="双人对战"
+        style="@style/SuperButton.PigButton"
+        android:textColor="#513D1F"
         app:sShapeStrokeWidth="2dp"/>
 
-    <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
+    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
         android:id="@+id/robot_btn_activity_main"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="60dp"
         android:layout_gravity="center"
-        app:sCenterTextString="人机对战"
-        app:sCenterTextColor="@color/black"
-        app:sUseShape="true"
-        app:sUseRipple="true"
-        app:sShapeCornersRadius="20dp"
-        app:sShapeStrokeColor="#66ccff"
-        app:sShapeSelectorNormalColor="#66ccff"
-        app:sShapeSelectorPressedColor="#00bbff"
+        app:sCornersRadius="30dp"
+        android:text="人机对战"
+        style="@style/SuperButton.PigButton"
+        android:textColor="#513D1F"
         app:sShapeStrokeWidth="2dp"/>
 
 </com.xuexiang.xui.widget.layout.XUILinearLayout>

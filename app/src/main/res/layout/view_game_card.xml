@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
-        android:background="#66ccff"
+        android:background="#C4945D"
         android:orientation="vertical">
 
         <com.xuexiang.xui.widget.textview.supertextview.SuperTextView
@@ -52,7 +52,7 @@
             android:layout_margin="10dp"
             android:layout_gravity="center_horizontal"
             android:text="加入房间"
-            style="@style/SuperButton.Blue"/>
+            style="@style/SuperButton.PigButton"/>
     </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
 </com.xuexiang.xui.widget.layout.XUILinearLayout>

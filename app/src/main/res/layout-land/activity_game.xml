@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/game_bk"
     tools:ignore="MissingDefaultResource">
 
     <TextView
@@ -32,16 +33,24 @@
             android:id="@+id/enemy_avt_activity_game"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/girl"
+            android:src="@drawable/pig_girl"
             android:layout_margin="20dp"/>
 
-        <RelativeLayout
-            android:id="@+id/enemy_cards_activity_game"
+        <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#66ccff"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:clickable="false"
+            android:focusable="false">
+
+            <RelativeLayout
+                android:id="@+id/enemy_cards_activity_game"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            </RelativeLayout>
+
+        </HorizontalScrollView>
 
     </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
@@ -72,18 +81,23 @@
             android:id="@+id/my_avt_activity_game"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/boy"
+            android:src="@drawable/pig_boy"
             android:layout_margin="20dp"/>
 
-        <RelativeLayout
-            android:id="@+id/my_cards_activity_game"
+        <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:background="#66ccff">
+            android:layout_margin="10dp">
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/my_cards_activity_game"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            </RelativeLayout>
+
+        </HorizontalScrollView>
+
 
     </com.xuexiang.xui.widget.layout.XUILinearLayout>
 
@@ -100,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@drawable/c01"
+            android:background="@drawable/card_bk1"
             android:gravity="center" />
 
         <ImageView
@@ -123,31 +137,32 @@
         android:layout_margin="10dp"/>
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+        style="@style/SuperButton.PigButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/robot_activity_game"
         android:layout_alignBottom="@id/robot_activity_game"
         android:layout_toLeftOf="@id/my_activity_game"
         android:layout_toRightOf="@id/robot_activity_game"
-        android:textSize="12sp"
-        app:sCornersRadius="15dp"
         android:text="托管"
-        style="@style/SuperButton.Blue"/>
+        android:layout_marginTop="10dp"
+        android:textSize="12sp"
+        app:sCornersRadius="15dp"/>
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperButton
         android:id="@+id/out_card_activity_game"
-        style="@style/SuperButton.Blue"
+        style="@style/SuperButton.PigButton"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_above="@id/my_activity_game"
         android:layout_alignEnd="@id/my_activity_game"
         android:layout_marginRight="10dp"
         android:text="出牌"
-        app:sCornersRadius="10dp"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        app:sCornersRadius="10dp" />
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperButton
-        style="@style/SuperButton.Blue"
+        style="@style/SuperButton.PigButton"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_above="@id/my_activity_game"
