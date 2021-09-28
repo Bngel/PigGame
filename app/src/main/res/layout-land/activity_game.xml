@@ -1,6 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.xuexiang.xui.widget.layout.XUIRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="MissingDefaultResource">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/turn_activity_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我方回合"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_margin="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"/>
+
+    <com.xuexiang.xui.widget.layout.XUILinearLayout
+        android:id="@+id/enemy_activity_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="MissingDefaultResource"
+        android:layout_toStartOf="@+id/setting_activity_game"
+        android:layout_toEndOf="@id/turn_activity_game"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/enemy_avt_activity_game"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/girl"
+            android:layout_margin="20dp"/>
+
+        <RelativeLayout
+            android:id="@+id/enemy_cards_activity_game"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#66ccff"
+            android:layout_margin="10dp"/>
+
+    </com.xuexiang.xui.widget.layout.XUILinearLayout>
+
+    <ImageView
+        android:id="@+id/setting_activity_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/setting" />
+
+    <com.xuexiang.xui.widget.layout.XUILinearLayout
+        android:id="@+id/my_activity_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="MissingDefaultResource"
+        android:layout_toStartOf="@+id/setting_activity_game"
+        android:layout_toEndOf="@id/turn_activity_game"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/my_avt_activity_game"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/boy"
+            android:layout_margin="20dp"/>
+
+        <RelativeLayout
+            android:id="@+id/my_cards_activity_game"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:background="#66ccff">
+
+        </RelativeLayout>
+
+    </com.xuexiang.xui.widget.layout.XUILinearLayout>
+
+    <com.xuexiang.xui.widget.layout.XUILinearLayout
+        android:id="@+id/put_cards_activity_game"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/my_activity_game"
+        android:layout_below="@id/enemy_activity_game"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/remain_cards_activity_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/c01"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/cur_card_activity_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/c01"
+            android:gravity="center" />
+
+    </com.xuexiang.xui.widget.layout.XUILinearLayout>
+
+    <ImageView
+        android:id="@+id/robot_activity_game"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/robot"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"/>
+
+    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/robot_activity_game"
+        android:layout_alignBottom="@id/robot_activity_game"
+        android:layout_toLeftOf="@id/my_activity_game"
+        android:layout_toRightOf="@id/robot_activity_game"
+        android:textSize="12sp"
+        app:sCornersRadius="15dp"
+        android:text="托管"
+        style="@style/SuperButton.Blue"/>
+
+    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+        android:id="@+id/out_card_activity_game"
+        style="@style/SuperButton.Blue"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_above="@id/my_activity_game"
+        android:layout_alignEnd="@id/my_activity_game"
+        android:layout_marginRight="10dp"
+        android:text="出牌"
+        app:sCornersRadius="10dp"
+        android:textSize="12sp" />
+
+    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+        style="@style/SuperButton.Blue"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_above="@id/my_activity_game"
+        android:layout_marginRight="10dp"
+        android:text="翻牌"
+        app:sCornersRadius="10dp"
+        android:layout_toLeftOf="@id/out_card_activity_game"
+        android:textSize="12sp" />
+
+</com.xuexiang.xui.widget.layout.XUIRelativeLayout>

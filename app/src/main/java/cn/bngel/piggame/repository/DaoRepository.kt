@@ -17,12 +17,12 @@ object DaoRepository {
                 call: Call<DefaultData<T>>,
                 response: Response<DefaultData<T>>
             ) {
-                val login = response.body()
-                if (login != null && login.code == 200) {
-                    event.success(login)
+                val body = response.body()
+                if (body != null && body.code == 200) {
+                    event.success(body)
                 }
                 else {
-                    event.failure(login)
+                    event.failure(body)
                 }
             }
 

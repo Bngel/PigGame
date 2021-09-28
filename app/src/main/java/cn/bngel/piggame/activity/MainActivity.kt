@@ -13,6 +13,7 @@ import cn.bngel.piggame.repository.UIRepository
 import cn.bngel.piggame.service.DaoEvent
 import cn.bngel.piggame.service.LoginEvent
 import cn.bngel.piggame.service.LoginService
+import com.xuexiang.xui.widget.dialog.materialdialog.CustomMaterialDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 
 class MainActivity : BaseActivity() {
@@ -29,6 +30,10 @@ class MainActivity : BaseActivity() {
         binding.onlineBtnActivityMain.setOnClickListener {
             online()
         }
+        
+        binding.robotBtnActivityMain.setOnClickListener {
+            robot()
+        }
     }
 
     private fun online() {
@@ -36,22 +41,40 @@ class MainActivity : BaseActivity() {
         val materialDialog = UIRepository.createSimpleLoadingTipDialog(this, "登录中...")
 
         val intent = Intent(this, LobbyActivity::class.java)
-        materialDialog.show()
-        loginService.postUserLogin("061900209", "a147258369", object : LoginEvent {
-            override fun success(data: PostUserLogin) {
-                val login = data.data
-                StatusRepository.userToken = login.token
-                Toast.makeText(this@MainActivity, "登录成功", Toast.LENGTH_SHORT).show()
-                materialDialog.dismiss()
-                startActivity(intent)
-            }
+        val loginDialog = MaterialDialog.Builder(this)
+            .title("登录界面")
+            .customView(R.layout.view_dialog_login, true)
+            .positiveText("登录")
+            .negativeText("取消")
+            .cancelable(false)
+            .onPositive { dialog, which ->
+                val account = dialog.findViewById<com.xuexiang.xui.widget.edittext.ClearEditText>(R.id.account_view_dialog_login)
+                val password = dialog.findViewById<com.xuexiang.xui.widget.edittext.PasswordEditText>(R.id.password_view_dialog_login)
+                materialDialog.show()
+                loginService.postUserLogin(account.text.toString(), password.text.toString(), object : LoginEvent {
+                    override fun success(data: PostUserLogin) {
+                        val login = data.data
+                        StatusRepository.userToken = login.token
+                        Toast.makeText(this@MainActivity, "登录成功", Toast.LENGTH_SHORT).show()
+                        materialDialog.dismiss()
+                        startActivity(intent)
+                    }
 
-            override fun failure(data: PostUserLogin?) {
-                if (!materialDialog.isCancelled) {
-                    Toast.makeText(this@MainActivity, "登录失败", Toast.LENGTH_SHORT).show()
-                    materialDialog.dismiss()
-                }
+                    override fun failure(data: PostUserLogin?) {
+                        if (!materialDialog.isCancelled) {
+                            Toast.makeText(this@MainActivity, "登录失败", Toast.LENGTH_SHORT).show()
+                            materialDialog.dismiss()
+                        }
+                    }
+                })
             }
-        })
+            .build()
+        loginDialog.show()
+    }
+
+    private fun robot() {
+
+        val intent = Intent(this, GameActivity::class.java)
+        startActivity(intent)
     }
 }

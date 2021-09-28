@@ -4,6 +4,7 @@ import android.os.Bundle
 import cn.bngel.piggame.databinding.ActivityLobbyBinding
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -13,6 +14,7 @@ import cn.bngel.piggame.R
 import cn.bngel.piggame.dao.DefaultData
 import cn.bngel.piggame.dao.getGameIndex.GetGameIndex
 import cn.bngel.piggame.dao.getGameUUID.GetGameUUID
+import cn.bngel.piggame.dao.getGameUUIDLast.GetGameUUIDLast
 import cn.bngel.piggame.dao.postGame.PostGame
 import cn.bngel.piggame.dao.postGameUUID.PostGameUUID
 import cn.bngel.piggame.repository.StatusRepository
@@ -188,7 +190,20 @@ class LobbyActivity : BaseActivity() {
                 materialDialog.show()
                 gameService.postGameUUID(uuid, StatusRepository.userToken, object : DaoEvent {
                     override fun <T> success(data: DefaultData<T>) {
-                        Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@LobbyActivity, GameActivity::class.java)
+                        gameService.getGameUUIDLast(
+                            uuid, StatusRepository.userToken, object: DaoEvent {
+                                override fun <T> success(data: DefaultData<T>) {
+                                    val last = data.data as GetGameUUIDLast
+                                    Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
+                                    intent.putExtra("game", last)
+                                    startActivity(intent)
+                                }
+
+                                override fun <T> failure(data: DefaultData<T>?) {
+                                    Toast.makeText(this@LobbyActivity, "加入房间失败, 请重试", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         materialDialog.dismiss()
                     }
 
