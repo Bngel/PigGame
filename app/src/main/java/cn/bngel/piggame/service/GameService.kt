@@ -3,7 +3,6 @@ package cn.bngel.piggame.service
 import cn.bngel.piggame.dao.GameDao
 import cn.bngel.piggame.repository.DaoRepository
 import java.lang.Exception
-import kotlin.concurrent.thread
 
 class GameService {
 
@@ -27,7 +26,7 @@ class GameService {
         }
     }
 
-    fun putGameUUID(type: Int, card: String, uuid: String, token: String, event: DaoEvent){
+    fun putGameUUID(type: Int, card: String?, uuid: String, token: String, event: DaoEvent){
         try {
             val putGameUUID = gameDao.putGameUUID(type, card, uuid, token)
             DaoRepository.enqueue(putGameUUID, event)

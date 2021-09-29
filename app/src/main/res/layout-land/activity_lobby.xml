@@ -14,12 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         app:sCenterBottomTextSize="10sp"
         app:sRightBottomTextSize="13sp"
         app:sCenterTextString="游戏大厅"
         app:sDividerLineType="none"
-        app:sCenterTextSize="20sp"
+        app:sCenterTextSize="15sp"
         app:sCenterTextColor="@color/black"
         app:sUseRipple="false"/>
 

@@ -1,5 +1,6 @@
 package cn.bngel.piggame.repository
 
+import android.util.Log
 import cn.bngel.piggame.dao.DefaultData
 import cn.bngel.piggame.dao.postUserLogin.PostUserLogin
 import cn.bngel.piggame.service.DaoEvent

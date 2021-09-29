@@ -38,7 +38,9 @@ class GameCardView: XUILinearLayout {
                             override fun <T> success(data: DefaultData<T>) {
                                 val last = data.data as GetGameUUIDLast
                                 Toast.makeText(context, "加入房间成功", Toast.LENGTH_SHORT).show()
+                                intent.putExtra("uuid", game.uuid)
                                 intent.putExtra("game", last)
+                                intent.putExtra("host", false)
                                 context.startActivity(intent)
                             }
 

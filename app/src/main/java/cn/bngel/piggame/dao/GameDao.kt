@@ -29,10 +29,11 @@ interface GameDao {
         @Header("Authorization") token: String
     ): Call<DefaultData<PostGameUUID>>
 
+    @FormUrlEncoded
     @PUT("game/{uuid}")
     fun putGameUUID(
-        @Query("type") type: Int,
-        @Query("card") card: String,
+        @Field("type") type: Int?,
+        @Field("card") card: String?,
         @Path("uuid") uuid: String,
         @Header("Authorization") token: String
     ): Call<DefaultData<PutGameUUID>>

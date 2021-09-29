@@ -178,7 +178,7 @@ class LobbyActivity : BaseActivity() {
             .content("请输入房间代码")
             .inputType(
                 InputType.TYPE_CLASS_TEXT
-                        or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                        or InputType.TYPE_TEXT_VARIATION_NORMAL
                         or InputType.TYPE_TEXT_FLAG_CAP_WORDS
             )
             .input("房间代码", "") { _, _ ->  }
@@ -197,6 +197,8 @@ class LobbyActivity : BaseActivity() {
                                     val last = data.data as GetGameUUIDLast
                                     Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
                                     intent.putExtra("game", last)
+                                    intent.putExtra("uuid", uuid)
+                                    intent.putExtra("host", false)
                                     startActivity(intent)
                                 }
 
@@ -249,12 +251,15 @@ class LobbyActivity : BaseActivity() {
         gameService.postGame(private, StatusRepository.userToken, object:DaoEvent {
             override fun <T> success(data: DefaultData<T>) {
                 val game = data.data as PostGame
-                println(game)
                 val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = ClipData.newPlainText("uuid", game.uuid)
                 clipboard.setPrimaryClip(clipData)
                 Toast.makeText(this@LobbyActivity, "房间代码: {${game.uuid}}\n已复制到剪贴板, 快去分享给好友吧~", Toast.LENGTH_SHORT).show()
                 materialDialog.dismiss()
+                val intent = Intent(this@LobbyActivity, GameActivity::class.java)
+                intent.putExtra("uuid", game.uuid)
+                intent.putExtra("host", true)
+                startActivity(intent)
             }
 
             override fun <T> failure(data: DefaultData<T>?) {
