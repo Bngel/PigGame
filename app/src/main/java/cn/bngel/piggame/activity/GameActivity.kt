@@ -5,7 +5,6 @@ import android.media.AudioManager
 import android.media.AudioManager.STREAM_MUSIC
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -20,7 +19,6 @@ import androidx.lifecycle.MutableLiveData
 import cn.bngel.piggame.R
 import cn.bngel.piggame.dao.DefaultData
 import cn.bngel.piggame.dao.getGameUUIDLast.GetGameUUIDLast
-import cn.bngel.piggame.dao.putGameUUID.PutGameUUID
 import cn.bngel.piggame.databinding.ActivityGameBinding
 import cn.bngel.piggame.repository.StatusRepository
 import cn.bngel.piggame.repository.UIRepository
@@ -48,8 +46,6 @@ class GameActivity : BaseActivity() {
     private lateinit var gameUUIDLast: GetGameUUIDLast
     private val timer = Timer()
     private var endGame = false
-    private var update = true
-    private var firstUpdate = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,18 +76,7 @@ class GameActivity : BaseActivity() {
                     Log.d("pigTest", "card: $curSelectedCardType")
                     gameService.putGameUUID(1, curSelectedCardType, uuid, StatusRepository.userToken, object: DaoEvent{
                         override fun <T> success(data: DefaultData<T>) {
-                            /*myTurn.value = false
-                            binding.curCardActivityGame.setImageResource(UIRepository.cards[curSelectedCardType]!!)*/
-                            Log.d("pigTest", "put: ${data.data}")
                             removeMyCard()
-                            /*    if (outCards.size > 0 && curSelectedCardType[0] == outCards.peek()[0]) {
-                                    for (c in outCards) {
-                                        addMyCard(c)
-                                    }
-                                    outCards.clear()
-                                    binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
-                                }
-                            outCards.push(curSelectedCardType)*/
                         }
 
                         override fun <T> failure(data: DefaultData<T>?) {
@@ -368,10 +353,5 @@ class GameActivity : BaseActivity() {
             .negativeText("取消")
             .build()
         build.show()
-    }
-
-    private fun getCurPlayer(): Int {
-        val host = intent.getBooleanExtra("host", false)
-        return if ((host && myTurn.value == true) || (!host && myTurn.value == false)) 0 else 1
     }
 }

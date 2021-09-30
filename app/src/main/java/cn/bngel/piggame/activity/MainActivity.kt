@@ -34,6 +34,10 @@ class MainActivity : BaseActivity() {
         binding.robotBtnActivityMain.setOnClickListener {
             robot()
         }
+
+        binding.friendsBtnActivityMain.setOnClickListener {
+            friends()
+        }
     }
 
     private fun online() {
@@ -72,9 +76,11 @@ class MainActivity : BaseActivity() {
         loginDialog.show()
     }
 
-    private fun robot() {
-
-        val intent = Intent(this, GameActivity::class.java)
+    private fun friends() {
+        val intent = Intent(this, FriendActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun robot() {
     }
 }
