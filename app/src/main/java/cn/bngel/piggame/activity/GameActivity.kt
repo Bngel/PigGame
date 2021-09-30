@@ -226,7 +226,7 @@ class GameActivity : BaseActivity() {
             if (index > baseIndex) {
                 val params = view.layoutParams as RelativeLayout.LayoutParams
                 if (binding.myCardsActivityGame.size > 0) {
-                    params.leftMargin -= binding.myCardsActivityGame[0].measuredWidth / 4
+                    params.leftMargin = (index-1) * (binding.myCardsActivityGame[0].measuredWidth / 4)
                 }
                 view.layoutParams = params
             }
@@ -323,6 +323,7 @@ class GameActivity : BaseActivity() {
                 if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
                     val host = intent.getBooleanExtra("host", true)
                     if (player == "0" && host || player == "1" && !host) {
+                        outCards.push(card)
                         for (c in outCards) {
                             runOnUiThread {
                                 addMyCard(c)
@@ -342,15 +343,14 @@ class GameActivity : BaseActivity() {
                     outCards.push(card)
                     binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
                     val host = intent.getBooleanExtra("host", true)
-                    if (player == "0" && host) {
+                    Log.d("pigTest", "host: $host, player: $player")
+                    if ((player == "0" && host) || (player == "1" && !host)) {
                         myCardCount -= 1
-                    } else {
+                    } else if (player == "1" && host || player == "0" && !host) {
                         binding.enemyCardsActivityGame.removeViewAt(enemyCardCount - 1)
                         enemyCardCount -= 1
                     }
                 }
-                /*if (myTurn.value != null)
-                    myTurn.value = !myTurn.value!!*/
             }
         }
     }
