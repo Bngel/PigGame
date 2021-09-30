@@ -3,7 +3,6 @@ package cn.bngel.piggame.activity
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,43 +10,39 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import androidx.core.view.size
+import androidx.lifecycle.MutableLiveData
 import cn.bngel.piggame.R
-import cn.bngel.piggame.databinding.ActivityFriendBinding
+import cn.bngel.piggame.databinding.ActivityRobotBinding
 import cn.bngel.piggame.repository.UIRepository
 import cn.bngel.piggame.widget.SettingDialogView
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
-import org.jetbrains.annotations.TestOnly
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FriendActivity : BaseActivity() {
+class RobotActivity : BaseActivity() {
 
-    /**
-     * PS: 主视角为 Player1 对家为 Player2
-     */
-
-    private lateinit var binding: ActivityFriendBinding
+    private lateinit var binding: ActivityRobotBinding
 
     private val remainCards = Stack<String>()
     private val outCards = Stack<String>()
-    private val player1Cards = ArrayList<String>()
-    private var player1CardsCount = 0
-    private val player2Cards = ArrayList<String>()
-    private var player2CardsCount = 0
+    private val playerCards = ArrayList<String>()
+    private var playerCardsCount = 0
+    private val robotCards = ArrayList<String>()
+    private var robotCardsCount = 0
+    private val mediaPlayer = MediaPlayer()
     private var curSelectedCard: ImageView?= null
     private var curSelectedCardType = ""
-    private val mediaPlayer = MediaPlayer()
-    private var curPlayer = 1
+
+    private val isPlayer = MutableLiveData(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFriendBinding.inflate(layoutInflater)
+        binding = ActivityRobotBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        binding.settingActivityFriend.setOnClickListener {
+        binding.settingActivityRobot.setOnClickListener {
             val setDialog = MaterialDialog.Builder(this)
                 .customView(SettingDialogView(this), true)
                 .positiveText("确定")
@@ -63,11 +58,17 @@ class FriendActivity : BaseActivity() {
         }
         getWashedCards()
         playBGM()
-        binding.flopCardActivityFriend.setOnClickListener {
-            flopCard()
+        isPlayer.observe(this) { playerTurn ->
+            if (!playerTurn) {
+                robotOperation()
+                isPlayer.value = true
+            }
         }
-        binding.outCardActivityFriend.setOnClickListener {
+        binding.outCardActivityRobot.setOnClickListener {
             outCard(curSelectedCardType)
+        }
+        binding.flopCardActivityRobot.setOnClickListener {
+            flopCard()
         }
     }
 
@@ -108,16 +109,16 @@ class FriendActivity : BaseActivity() {
         }
     }
 
-    private fun addPlayer1Card(card: String) {
+    private fun addPlayerCard(card: String) {
         val cardRes = UIRepository.cards[card]
         val params = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        if (binding.myCardsActivityFriend.size > 0) {
-            val view = binding.myCardsActivityFriend[0]
+        if (binding.myCardsActivityRobot.size > 0) {
+            val view = binding.myCardsActivityRobot[0]
             view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            params.leftMargin = player1CardsCount * binding.myCardsActivityFriend[0].measuredWidth / 4
+            params.leftMargin = playerCardsCount * binding.myCardsActivityRobot[0].measuredWidth / 4
         }
         val imageView = ImageView(this)
         imageView.adjustViewBounds = true
@@ -144,37 +145,37 @@ class FriendActivity : BaseActivity() {
                 curSelectedCardType = card
             }
         }
-        binding.myCardsActivityFriend.addView(imageView)
-        player1CardsCount += 1
+        binding.myCardsActivityRobot.addView(imageView)
+        playerCardsCount += 1
     }
 
-    private fun addPlayer2Card(card: String) {
+    private fun addRobotCard(card: String) {
         val params = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        if (binding.enemyCardsActivityFriend.size > 0) {
-            val view = binding.enemyCardsActivityFriend[0]
+        if (binding.enemyCardsActivityRobot.size > 0) {
+            val view = binding.enemyCardsActivityRobot[0]
             view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            params.leftMargin = player2CardsCount * binding.enemyCardsActivityFriend[0].measuredWidth / 4
+            params.leftMargin = robotCardsCount * binding.enemyCardsActivityRobot[0].measuredWidth / 4
         }
         val imageView = ImageView(this)
         imageView.adjustViewBounds = true
         imageView.setImageResource(R.drawable.card_bk1)
         imageView.layoutParams = params
         imageView.setPadding(3, 3, 3, 3)
-        binding.enemyCardsActivityFriend.addView(imageView)
-        player2CardsCount += 1
+        binding.enemyCardsActivityRobot.addView(imageView)
+        robotCardsCount += 1
     }
 
-    private fun removePlayer1Card(card: String) {
-        player1Cards.remove(card)
-        player1CardsCount -= 1
+    private fun removePlayerCard(card: String) {
+        playerCards.remove(card)
+        playerCardsCount -= 1
     }
 
-    private fun removePlayer2Card(card: String) {
-        binding.enemyCardsActivityFriend.removeViewAt(player2CardsCount - 1)
-        player2CardsCount -= 1
+    private fun removeRobotCard(card: String) {
+        binding.enemyCardsActivityRobot.removeViewAt(robotCardsCount - 1)
+        robotCardsCount -= 1
     }
 
     private fun outCard(card: String) {
@@ -184,28 +185,29 @@ class FriendActivity : BaseActivity() {
         else {
             if (outCards.size > 0 && card[0] == outCards.peek()[0]){
                 for (c in outCards) {
-                    player1Cards.add(c)
+                    playerCards.add(c)
                 }
                 outCards.clear()
-                binding.curCardActivityFriend.setImageResource(R.drawable.transparentcard)
+                binding.curCardActivityRobot.setImageResource(R.drawable.transparentcard)
             } else {
                 outCards.push(card)
-                binding.curCardActivityFriend.setImageResource(UIRepository.cards[card]!!)
-                removePlayer1Card(card)
+                binding.curCardActivityRobot.setImageResource(UIRepository.cards[card]!!)
+                removePlayerCard(card)
             }
             if (curSelectedCard != null) {
                 curSelectedCard?.setBackgroundResource(0)
                 curSelectedCard = null
                 curSelectedCardType = ""
             }
-            switchPlayers()
+            refresh()
         }
     }
 
+
     private fun flopCard() {
         if (remainCards.size <= 0) {
-            val win = player1CardsCount > player2CardsCount
-            val msg = if (win) "当前玩家胜利" else "对立玩家胜利"
+            val win = playerCardsCount > robotCardsCount
+            val msg = if (win) "玩家胜利" else "电脑胜利"
             val build = MaterialDialog.Builder(this)
                 .iconRes(R.drawable.dialog_tip)
                 .limitIconToDefaultSize()
@@ -229,81 +231,90 @@ class FriendActivity : BaseActivity() {
             if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
                 outCards.push(flop)
                 for (c in outCards) {
-                    player1Cards.add(c)
+                    playerCards.add(c)
                 }
                 outCards.clear()
-                binding.curCardActivityFriend.setImageResource(R.drawable.transparentcard)
+                binding.curCardActivityRobot.setImageResource(R.drawable.transparentcard)
             }
             else {
                 outCards.push(flop)
-                binding.curCardActivityFriend.setImageResource(UIRepository.cards[flop]!!)
+                binding.curCardActivityRobot.setImageResource(UIRepository.cards[flop]!!)
             }
         }
-        switchPlayers()
+        refresh()
     }
 
-    private fun switchPlayers() {
-        swapCounts()
-        swapCards()
-        swapAvt()
-        refreshGame()
+    private fun refresh() {
+        binding.myCardsActivityRobot.removeAllViews()
+        binding.enemyCardsActivityRobot.removeAllViews()
+        if (playerCards.size > 0) {
+            playerCardsCount = 0
+            for (c in playerCards)
+                addPlayerCard(c)
+        }
+        if (robotCards.size > 0) {
+            robotCardsCount = 0
+            for (c in robotCards)
+                addRobotCard(c)
+        }
+        if (isPlayer.value == true) {
+            isPlayer.value = false
+        }
     }
 
-    private fun swapAvt() {
-        if (curPlayer == 1) {
-            binding.myAvtActivityFriend.setImageResource(R.drawable.pig_girl)
-            binding.enemyAvtActivityFriend.setImageResource(R.drawable.pig_boy)
-            curPlayer = 2
+    private fun robotOperation() {
+        val operation = UIRepository.getRobotCard()
+        if (operation == "") {
+            if (remainCards.size <= 0) {
+                val win = playerCardsCount > robotCardsCount
+                val msg = if (win) "玩家胜利" else "电脑胜利"
+                val build = MaterialDialog.Builder(this)
+                    .iconRes(R.drawable.dialog_tip)
+                    .limitIconToDefaultSize()
+                    .title("提示:")
+                    .content("游戏已结束\n$msg")
+                    .positiveText("退出对局")
+                    .onPositive() { dialog, _ ->
+                        dialog.dismiss()
+                        finish()
+                    }
+                    .cancelable(false)
+                    .cancelListener {
+                        finish()
+                    }
+                    .build()
+                build.show()
+            }
+            else {
+                val flop = remainCards.pop()
+                Log.d("pigFriend", "flopCard: 当前电脑翻开了一张: $flop")
+                if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
+                    outCards.push(flop)
+                    for (c in outCards) {
+                        robotCards.add(c)
+                    }
+                    outCards.clear()
+                    binding.curCardActivityRobot.setImageResource(R.drawable.transparentcard)
+                }
+                else {
+                    outCards.push(flop)
+                    binding.curCardActivityRobot.setImageResource(UIRepository.cards[flop]!!)
+                }
+            }
         }
         else {
-            binding.myAvtActivityFriend.setImageResource(R.drawable.pig_boy)
-            binding.enemyAvtActivityFriend.setImageResource(R.drawable.pig_girl)
-            curPlayer = 1
-        }
-    }
-
-    private fun refreshGame() {
-        binding.myCardsActivityFriend.removeAllViews()
-        binding.enemyCardsActivityFriend.removeAllViews()
-        if (player1Cards.size > 0) {
-            player1CardsCount = 0
-            for (c in player1Cards)
-                addPlayer1Card(c)
-        }
-        if (player2Cards.size > 0) {
-            player2CardsCount = 0
-            for (c in player2Cards)
-                addPlayer2Card(c)
-        }
-    }
-
-    private fun swapCards() {
-        val tempCards = ArrayList<String>(player1Cards)
-        player1Cards.clear()
-        player1Cards.addAll(player2Cards)
-        player2Cards.clear()
-        player2Cards.addAll(tempCards)
-        tempCards.clear()
-    }
-
-    private fun swapCounts() {
-        val tempCount = player1CardsCount
-        player1CardsCount = player2CardsCount
-        player2CardsCount = tempCount
-    }
-
-    override fun onBackPressed() {
-        val build = MaterialDialog.Builder(this)
-            .iconRes(R.drawable.dialog_tip)
-            .limitIconToDefaultSize()
-            .title("提示:")
-            .content("是否确定退出游戏?")
-            .positiveText("确定")
-            .onPositive() { dialog, _ ->
-                super.onBackPressed()
+            if (outCards.size > 0 && operation[0] == outCards.peek()[0]){
+                for (c in outCards) {
+                    robotCards.add(c)
+                }
+                outCards.clear()
+                binding.curCardActivityRobot.setImageResource(R.drawable.transparentcard)
+            } else {
+                outCards.push(operation)
+                binding.curCardActivityRobot.setImageResource(UIRepository.cards[operation]!!)
+                removeRobotCard(operation)
             }
-            .negativeText("取消")
-            .build()
-        build.show()
+            refresh()
+        }
     }
 }

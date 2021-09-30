@@ -82,5 +82,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun robot() {
+        val intent = Intent(this, RobotActivity::class.java)
+        startActivity(intent)
     }
 }

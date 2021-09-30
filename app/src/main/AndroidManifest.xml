@@ -14,9 +14,13 @@
         android:theme="@style/XUITheme.Phone"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.RobotActivity"
+            android:exported="true"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".activity.FriendActivity"
-            android:screenOrientation="landscape"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.GameActivity"
             android:exported="true"
