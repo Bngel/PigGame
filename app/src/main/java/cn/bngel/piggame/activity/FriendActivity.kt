@@ -204,8 +204,13 @@ class FriendActivity : BaseActivity() {
 
     private fun flopCard() {
         if (remainCards.size <= 0) {
-            val win = player1CardsCount > player2CardsCount
-            val msg = if (win) "当前玩家胜利" else "对立玩家胜利"
+            val win = player1CardsCount < player2CardsCount
+            val msg = if (win) "当前玩家胜利" else {
+                if (player1CardsCount == player2CardsCount)
+                    "平局"
+                else
+                    "对立玩家胜利"
+            }
             val build = MaterialDialog.Builder(this)
                 .iconRes(R.drawable.dialog_tip)
                 .limitIconToDefaultSize()

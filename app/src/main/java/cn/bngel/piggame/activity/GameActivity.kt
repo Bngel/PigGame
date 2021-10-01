@@ -307,7 +307,12 @@ class GameActivity : BaseActivity() {
                     if (data?.code == 400 && !endGame) {
                         endGame = true
                         refresh(gameUUIDLast)
-                        val msg = if (myCardCount < enemyCardCount) "你赢了" else "你输了"
+                        val msg = if (myCardCount < enemyCardCount) "你赢了" else {
+                            if (myCardCount == enemyCardCount)
+                                "平局"
+                            else
+                                "你输了"
+                        }
                         val build = MaterialDialog.Builder(this@GameActivity)
                             .iconRes(R.drawable.dialog_tip)
                             .limitIconToDefaultSize()

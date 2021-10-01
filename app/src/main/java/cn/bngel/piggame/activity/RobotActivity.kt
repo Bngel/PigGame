@@ -174,7 +174,7 @@ class RobotActivity : BaseActivity() {
     }
 
     private fun removeRobotCard(card: String) {
-        binding.enemyCardsActivityRobot.removeViewAt(robotCardsCount - 1)
+        robotCards.remove(card)
         robotCardsCount -= 1
     }
 
@@ -266,8 +266,13 @@ class RobotActivity : BaseActivity() {
         val operation = UIRepository.getRobotCard()
         if (operation == "") {
             if (remainCards.size <= 0) {
-                val win = playerCardsCount > robotCardsCount
-                val msg = if (win) "玩家胜利" else "电脑胜利"
+                val win = playerCardsCount < robotCardsCount
+                val msg = if (win) "玩家胜利" else {
+                    if (playerCardsCount == robotCardsCount)
+                        "平局"
+                    else
+                        "电脑胜利"
+                }
                 val build = MaterialDialog.Builder(this)
                     .iconRes(R.drawable.dialog_tip)
                     .limitIconToDefaultSize()
