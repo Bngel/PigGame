@@ -83,7 +83,6 @@ class GameActivity : BaseActivity() {
                         override fun <T> failure(data: DefaultData<T>?) {
                             Toast.makeText(this@GameActivity, "出牌失败, 请重试", Toast.LENGTH_SHORT).show()
                         }
-
                     })
                 }
             }
@@ -170,6 +169,25 @@ class GameActivity : BaseActivity() {
         super.onResume()
         if (!mediaPlayer.isPlaying)
             mediaPlayer.start()
+        val uuid = intent.getStringExtra("uuid")
+        if (uuid == null) {
+            val build = MaterialDialog.Builder(this@GameActivity)
+                .iconRes(R.drawable.dialog_tip)
+                .limitIconToDefaultSize()
+                .title("提示:")
+                .content("获取房间UUID异常")
+                .positiveText("退出对局")
+                .onPositive() { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                }
+                .cancelable(false)
+                .cancelListener {
+                    finish()
+                }
+                .build()
+            build.show()
+        }
     }
 
     override fun onPause() {
@@ -326,11 +344,13 @@ class GameActivity : BaseActivity() {
                     if (player == "0" && host || player == "1" && !host) {
                         for (c in outCards) {
                             myCards.add(c)
+                            myCardCount += 1
                         }
                         outCards.clear()
                     } else if (player == "1" && host || player == "0" && !host) {
                         for (c in outCards) {
                             enemyCards.add(c)
+                            enemyCardCount += 1
                         }
                         outCards.clear()
                     }
@@ -345,12 +365,14 @@ class GameActivity : BaseActivity() {
                     if (player == "0" && host || player == "1" && !host) {
                         outCards.push(card)
                         for (c in outCards) {
-                            myCards.add(card)
+                            myCards.add(c)
+                            myCardCount += 1
                         }
                         outCards.clear()
                     } else if (player == "1" && host || player == "0" && !host) {
                         for (c in outCards) {
-                            enemyCards.add(card)
+                            enemyCards.add(c)
+                            enemyCardCount += 1
                         }
                         outCards.clear()
                     }
@@ -360,6 +382,7 @@ class GameActivity : BaseActivity() {
                     binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
                     val host = intent.getBooleanExtra("host", true)
                     if ((player == "0" && host) || (player == "1" && !host)) {
+                        myCards.remove(card)
                         myCardCount -= 1
                     } else if (player == "1" && host || player == "0" && !host) {
                         enemyCards.remove(card)
@@ -371,6 +394,7 @@ class GameActivity : BaseActivity() {
         binding.myCardsActivityGame.removeAllViews()
         binding.enemyCardsActivityGame.removeAllViews()
         if (myCards.size > 0) {
+            println(myCards.toString())
             myCardCount = 0
             for (c in myCards)
                 addMyCard(c)
