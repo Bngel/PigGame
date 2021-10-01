@@ -1,5 +1,6 @@
 package cn.bngel.piggame
 
+import androidx.lifecycle.MutableLiveData
 import cn.bngel.piggame.repository.UIRepository
 import org.junit.Test
 
@@ -15,5 +16,4 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
-
 }

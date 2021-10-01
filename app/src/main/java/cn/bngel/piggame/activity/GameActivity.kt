@@ -46,6 +46,7 @@ class GameActivity : BaseActivity() {
     private lateinit var gameUUIDLast: GetGameUUIDLast
     private val timer = Timer()
     private var endGame = false
+    private var isRobot = MutableLiveData(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +77,7 @@ class GameActivity : BaseActivity() {
                     Log.d("pigTest", "card: $curSelectedCardType")
                     gameService.putGameUUID(1, curSelectedCardType, uuid, StatusRepository.userToken, object: DaoEvent{
                         override fun <T> success(data: DefaultData<T>) {
-                            removeMyCard()
+                            myCards.remove(curSelectedCardType)
                         }
 
                         override fun <T> failure(data: DefaultData<T>?) {
@@ -93,7 +94,6 @@ class GameActivity : BaseActivity() {
         binding.flopCardActivityGame.setOnClickListener {
             if (myTurn.value != null && myTurn.value == true) {
                 val uuid = intent.getStringExtra("uuid")!!
-                val host = intent.getBooleanExtra("host", false)
                 gameService.putGameUUID(0, null, uuid, StatusRepository.userToken, object: DaoEvent{
                     override fun <T> success(data: DefaultData<T>) {
                     }
@@ -108,6 +108,21 @@ class GameActivity : BaseActivity() {
                 Toast.makeText(this, "还没有到你的回合噢~", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.robotBtnActivityGame.setOnClickListener {
+            val robot = it as com.xuexiang.xui.widget.textview.supertextview.SuperButton
+            if (isRobot.value != null && isRobot.value == true) {
+                robot.text = "托管"
+                binding.flopCardActivityGame.isClickable = true
+                binding.outCardActivityGame.isClickable = true
+                isRobot.value = false
+            }
+            else {
+                robot.text = "取消"
+                binding.flopCardActivityGame.isClickable = false
+                binding.outCardActivityGame.isClickable = false
+                isRobot.value = true
+            }
+        }
         gameStarted.observe(this) { started ->
             if (started) {
                 myTurn.observe(this) { isMe ->
@@ -120,12 +135,22 @@ class GameActivity : BaseActivity() {
                         binding.flopCardActivityGame.visibility = View.VISIBLE
                         binding.outCardActivityGame.visibility = View.VISIBLE
                         binding.turnActivityGame.text = "你的回合"
+                        if (isRobot.value == true) {
+                            isRobot.value = true
+                        }
                     }
                     refresh(gameUUIDLast)
                 }
             }
             else {
                 binding.turnActivityGame.text = "对局未开始"
+            }
+        }
+        isRobot.observe(this) {
+            if (it) {
+                if (myTurn.value == true) {
+                    onRobot()
+                }
             }
         }
         playBGM()
@@ -166,7 +191,6 @@ class GameActivity : BaseActivity() {
     }
 
     private fun addMyCard(card: String) {
-        myCards.add(card)
         val cardRes = UIRepository.cards[card]
         val params = RelativeLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         if (binding.myCardsActivityGame.size > 0) {
@@ -221,7 +245,6 @@ class GameActivity : BaseActivity() {
     }
 
     private fun addEnemyCard(card: String) {
-        enemyCards.add(card)
         val params = RelativeLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         if (binding.enemyCardsActivityGame.size > 0) {
             val view = binding.enemyCardsActivityGame[0]
@@ -266,7 +289,23 @@ class GameActivity : BaseActivity() {
                     if (data?.code == 400 && !endGame) {
                         endGame = true
                         refresh(gameUUIDLast)
-                        Toast.makeText(this@GameActivity, "对局已结束", Toast.LENGTH_SHORT).show()
+                        val msg = if (myCardCount < enemyCardCount) "你赢了" else "你输了"
+                        val build = MaterialDialog.Builder(this@GameActivity)
+                            .iconRes(R.drawable.dialog_tip)
+                            .limitIconToDefaultSize()
+                            .title("提示:")
+                            .content("游戏已结束\n$msg")
+                            .positiveText("退出对局")
+                            .onPositive() { dialog, _ ->
+                                dialog.dismiss()
+                                finish()
+                            }
+                            .cancelable(false)
+                            .cancelListener {
+                                finish()
+                            }
+                            .build()
+                        build.show()
                     }
                 }
             })
@@ -286,16 +325,12 @@ class GameActivity : BaseActivity() {
                     val host = intent.getBooleanExtra("host", false)
                     if (player == "0" && host || player == "1" && !host) {
                         for (c in outCards) {
-                            runOnUiThread {
-                                addMyCard(c)
-                            }
+                            myCards.add(c)
                         }
                         outCards.clear()
                     } else if (player == "1" && host || player == "0" && !host) {
                         for (c in outCards) {
-                            runOnUiThread {
-                                addEnemyCard(c)
-                            }
+                            enemyCards.add(c)
                         }
                         outCards.clear()
                     }
@@ -310,16 +345,12 @@ class GameActivity : BaseActivity() {
                     if (player == "0" && host || player == "1" && !host) {
                         outCards.push(card)
                         for (c in outCards) {
-                            runOnUiThread {
-                                addMyCard(c)
-                            }
+                            myCards.add(card)
                         }
                         outCards.clear()
                     } else if (player == "1" && host || player == "0" && !host) {
                         for (c in outCards) {
-                            runOnUiThread {
-                                addEnemyCard(c)
-                            }
+                            enemyCards.add(card)
                         }
                         outCards.clear()
                     }
@@ -328,15 +359,51 @@ class GameActivity : BaseActivity() {
                     outCards.push(card)
                     binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
                     val host = intent.getBooleanExtra("host", true)
-                    Log.d("pigTest", "host: $host, player: $player")
                     if ((player == "0" && host) || (player == "1" && !host)) {
                         myCardCount -= 1
                     } else if (player == "1" && host || player == "0" && !host) {
-                        binding.enemyCardsActivityGame.removeViewAt(enemyCardCount - 1)
+                        enemyCards.remove(card)
                         enemyCardCount -= 1
                     }
                 }
             }
+        }
+        binding.myCardsActivityGame.removeAllViews()
+        binding.enemyCardsActivityGame.removeAllViews()
+        if (myCards.size > 0) {
+            myCardCount = 0
+            for (c in myCards)
+                addMyCard(c)
+        }
+        if (enemyCards.size > 0) {
+            enemyCardCount = 0
+            for (c in enemyCards)
+                addEnemyCard(c)
+        }
+    }
+
+    private fun onRobot() {
+        val card = UIRepository.getRobotCard()
+        val uuid = intent.getStringExtra("uuid")!!
+        Log.d("pigTest", "onRobot: 机器人的操作: [$card]")
+        if (card == "") {
+            gameService.putGameUUID(0, null, uuid, StatusRepository.userToken, object: DaoEvent{
+                override fun <T> success(data: DefaultData<T>) {
+                }
+                override fun <T> failure(data: DefaultData<T>?) {
+                    Toast.makeText(this@GameActivity, "机器人翻牌失败, 请重试", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+        else {
+            gameService.putGameUUID(1, card, uuid, StatusRepository.userToken, object: DaoEvent{
+                override fun <T> success(data: DefaultData<T>) {
+                    myCards.remove(card)
+                }
+                override fun <T> failure(data: DefaultData<T>?) {
+                    Toast.makeText(this@GameActivity, "机器人出牌失败, 请重试", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 

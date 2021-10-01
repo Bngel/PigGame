@@ -300,6 +300,7 @@ class RobotActivity : BaseActivity() {
                     outCards.push(flop)
                     binding.curCardActivityRobot.setImageResource(UIRepository.cards[flop]!!)
                 }
+                refresh()
             }
         }
         else {

@@ -193,17 +193,18 @@
         android:layout_margin="10dp"/>
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+        android:id="@+id/robot_btn_activity_game"
         style="@style/SuperButton.PigButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/robot_activity_game"
         android:layout_alignBottom="@id/robot_activity_game"
+        android:layout_marginTop="10dp"
         android:layout_toLeftOf="@id/my_activity_game"
         android:layout_toRightOf="@id/robot_activity_game"
         android:text="托管"
-        android:layout_marginTop="10dp"
         android:textSize="12sp"
-        app:sCornersRadius="15dp"/>
+        app:sCornersRadius="15dp" />
 
     <com.xuexiang.xui.widget.textview.supertextview.SuperButton
         android:id="@+id/out_card_activity_game"
