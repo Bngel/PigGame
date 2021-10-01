@@ -281,7 +281,7 @@ class GameActivity : BaseActivity() {
     private fun initTimer() {
         val uuid = intent.getStringExtra("uuid")!!
         val timerTask = MyTimerTask(uuid)
-        timer.schedule(timerTask, 0, 1000)
+        timer.schedule(timerTask, 0, 200)
     }
 
     inner class MyTimerTask(private val uuid: String): TimerTask() {
