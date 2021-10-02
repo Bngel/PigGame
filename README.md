@@ -27,9 +27,9 @@
 
 ## 安装
 
-当前最新的`apk`版本为`1.0.0-SNAPSHOT`, 已经发布在`release`中
-[![1.0.0-SNAPSHOT](https://github.com/Bngel/PigGame/releases/tag/1.0.0-SNAPSHOT)]
-欢迎各位进行下载使用. (联机需要连接校园网)
+当前最新的`apk`版本为`1.0.0-SNAPSHOT`, 已经发布在`release`中</br>
+<a href="https://github.com/Bngel/PigGame/releases/tag/1.0.0-SNAPSHOT"></a></br>
+欢迎各位进行下载使用. (联机需要连接校园网)</br>
 
 ## 使用说明
 
