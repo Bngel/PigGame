@@ -78,18 +78,4 @@ object UIRepository {
         .progress(true, 0)
         .progressIndeterminateStyle(false)
         .build()
-
-    /**
-     * 人机返回当前应该出的牌
-     * String:
-     * 返回牌型则表示该出的牌, 返回空字符串则表示翻牌
-     * 算法优先级:
-     * // x：我方手牌 y:对手手牌 z：放置区叠的牌
-     *  1. 必胜条件 (满足后只需要不断翻牌即可获得胜利):
-     *      x + 2y + z >= 78
-     *  2.  ...
-     */
-    fun getRobotCard(): String {
-        return ""
-    }
 }

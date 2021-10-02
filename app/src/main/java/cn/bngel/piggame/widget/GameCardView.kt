@@ -45,14 +45,30 @@ class GameCardView: XUILinearLayout {
                             }
 
                             override fun <T> failure(data: DefaultData<T>?) {
-                                Toast.makeText(context, "加入房间失败, 请重试", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "加入房间失败, 请重试",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         })
                     materialDialog.dismiss()
                 }
 
                 override fun <T> failure(data: DefaultData<T>?) {
-                    Toast.makeText(context, "加入房间失败, 请重试", Toast.LENGTH_SHORT).show()
+                    if (data?.code == 403) {
+                        Toast.makeText(
+                            context,
+                            "房间已满, 请更换房间加入",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "加入房间失败, 请重试",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     materialDialog.dismiss()
                 }
             })

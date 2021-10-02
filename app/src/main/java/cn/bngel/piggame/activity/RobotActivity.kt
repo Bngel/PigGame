@@ -15,6 +15,7 @@ import androidx.core.view.size
 import androidx.lifecycle.MutableLiveData
 import cn.bngel.piggame.R
 import cn.bngel.piggame.databinding.ActivityRobotBinding
+import cn.bngel.piggame.repository.RobotRepository
 import cn.bngel.piggame.repository.UIRepository
 import cn.bngel.piggame.widget.SettingDialogView
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
@@ -205,9 +206,43 @@ class RobotActivity : BaseActivity() {
 
 
     private fun flopCard() {
+        val flop = remainCards.pop()
+        Log.d("pigFriend", "flopCard: 当前玩家翻开了一张: $flop")
+        if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
+            outCards.push(flop)
+            for (c in outCards) {
+                playerCards.add(c)
+            }
+            outCards.clear()
+            binding.curCardActivityRobot.setImageResource(R.drawable.transparentcard)
+        } else {
+            outCards.push(flop)
+            binding.curCardActivityRobot.setImageResource(UIRepository.cards[flop]!!)
+        }
+        refresh()
+    }
+
+    private fun refresh() {
+        binding.myCardsActivityRobot.removeAllViews()
+        binding.enemyCardsActivityRobot.removeAllViews()
+        if (playerCards.size > 0) {
+            playerCardsCount = 0
+            for (c in playerCards)
+                addPlayerCard(c)
+        }
+        if (robotCards.size > 0) {
+            robotCardsCount = 0
+            for (c in robotCards)
+                addRobotCard(c)
+        }
         if (remainCards.size <= 0) {
-            val win = playerCardsCount > robotCardsCount
-            val msg = if (win) "玩家胜利" else "电脑胜利"
+            val win = playerCardsCount < robotCardsCount
+            val msg = if (win) "玩家胜利" else {
+                if (playerCardsCount == robotCardsCount)
+                    "平局"
+                else
+                    "电脑胜利"
+            }
             val build = MaterialDialog.Builder(this)
                 .iconRes(R.drawable.dialog_tip)
                 .limitIconToDefaultSize()
@@ -226,71 +261,15 @@ class RobotActivity : BaseActivity() {
             build.show()
         }
         else {
-            val flop = remainCards.pop()
-            Log.d("pigFriend", "flopCard: 当前玩家翻开了一张: $flop")
-            if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
-                outCards.push(flop)
-                for (c in outCards) {
-                    playerCards.add(c)
-                }
-                outCards.clear()
-                binding.curCardActivityRobot.setImageResource(R.drawable.transparentcard)
+            if (isPlayer.value == true) {
+                isPlayer.value = false
             }
-            else {
-                outCards.push(flop)
-                binding.curCardActivityRobot.setImageResource(UIRepository.cards[flop]!!)
-            }
-        }
-        refresh()
-    }
-
-    private fun refresh() {
-        binding.myCardsActivityRobot.removeAllViews()
-        binding.enemyCardsActivityRobot.removeAllViews()
-        if (playerCards.size > 0) {
-            playerCardsCount = 0
-            for (c in playerCards)
-                addPlayerCard(c)
-        }
-        if (robotCards.size > 0) {
-            robotCardsCount = 0
-            for (c in robotCards)
-                addRobotCard(c)
-        }
-        if (isPlayer.value == true) {
-            isPlayer.value = false
         }
     }
 
     private fun robotOperation() {
-        val operation = UIRepository.getRobotCard()
+        val operation = RobotRepository.getRobotCard(robotCards, playerCards, outCards)
         if (operation == "") {
-            if (remainCards.size <= 0) {
-                val win = playerCardsCount < robotCardsCount
-                val msg = if (win) "玩家胜利" else {
-                    if (playerCardsCount == robotCardsCount)
-                        "平局"
-                    else
-                        "电脑胜利"
-                }
-                val build = MaterialDialog.Builder(this)
-                    .iconRes(R.drawable.dialog_tip)
-                    .limitIconToDefaultSize()
-                    .title("提示:")
-                    .content("游戏已结束\n$msg")
-                    .positiveText("退出对局")
-                    .onPositive() { dialog, _ ->
-                        dialog.dismiss()
-                        finish()
-                    }
-                    .cancelable(false)
-                    .cancelListener {
-                        finish()
-                    }
-                    .build()
-                build.show()
-            }
-            else {
                 val flop = remainCards.pop()
                 Log.d("pigFriend", "flopCard: 当前电脑翻开了一张: $flop")
                 if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
@@ -306,9 +285,9 @@ class RobotActivity : BaseActivity() {
                     binding.curCardActivityRobot.setImageResource(UIRepository.cards[flop]!!)
                 }
                 refresh()
-            }
         }
         else {
+            Log.d("pigFriend", "flopCard: 当前电脑打出了一张: $operation")
             if (outCards.size > 0 && operation[0] == outCards.peek()[0]){
                 for (c in outCards) {
                     robotCards.add(c)

@@ -203,7 +203,19 @@ class LobbyActivity : BaseActivity() {
                                 }
 
                                 override fun <T> failure(data: DefaultData<T>?) {
-                                    Toast.makeText(this@LobbyActivity, "加入房间失败, 请重试", Toast.LENGTH_SHORT).show()
+                                    if (data?.code == 403) {
+                                        Toast.makeText(
+                                            this@LobbyActivity,
+                                            "房间已满, 请更换房间加入",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(
+                                            this@LobbyActivity,
+                                            "加入房间失败, 请重试",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             })
                         materialDialog.dismiss()

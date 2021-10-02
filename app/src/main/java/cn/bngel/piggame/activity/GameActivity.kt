@@ -20,6 +20,7 @@ import cn.bngel.piggame.R
 import cn.bngel.piggame.dao.DefaultData
 import cn.bngel.piggame.dao.getGameUUIDLast.GetGameUUIDLast
 import cn.bngel.piggame.databinding.ActivityGameBinding
+import cn.bngel.piggame.repository.RobotRepository
 import cn.bngel.piggame.repository.StatusRepository
 import cn.bngel.piggame.repository.UIRepository
 import cn.bngel.piggame.service.DaoEvent
@@ -412,7 +413,7 @@ class GameActivity : BaseActivity() {
     }
 
     private fun onRobot() {
-        val card = UIRepository.getRobotCard()
+        val card = RobotRepository.getRobotCard(myCards, enemyCards, outCards)
         val uuid = intent.getStringExtra("uuid")!!
         Log.d("pigTest", "onRobot: 机器人的操作: [$card]")
         if (card == "") {

@@ -203,7 +203,26 @@ class FriendActivity : BaseActivity() {
     }
 
     private fun flopCard() {
+        val flop = remainCards.pop()
+        Log.d("pigFriend", "flopCard: 当前玩家翻开了一张: $flop")
+        if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
+            outCards.push(flop)
+            for (c in outCards) {
+                player1Cards.add(c)
+            }
+            outCards.clear()
+            binding.curCardActivityFriend.setImageResource(R.drawable.transparentcard)
+        }
+        else {
+            outCards.push(flop)
+            binding.curCardActivityFriend.setImageResource(UIRepository.cards[flop]!!)
+        }
+        switchPlayers()
+    }
+
+    private fun switchPlayers() {
         if (remainCards.size <= 0) {
+            refreshGame()
             val win = player1CardsCount < player2CardsCount
             val msg = if (win) "当前玩家胜利" else {
                 if (player1CardsCount == player2CardsCount)
@@ -229,29 +248,11 @@ class FriendActivity : BaseActivity() {
             build.show()
         }
         else {
-            val flop = remainCards.pop()
-            Log.d("pigFriend", "flopCard: 当前玩家翻开了一张: $flop")
-            if (outCards.size > 0 && flop[0] == outCards.peek()[0]) {
-                outCards.push(flop)
-                for (c in outCards) {
-                    player1Cards.add(c)
-                }
-                outCards.clear()
-                binding.curCardActivityFriend.setImageResource(R.drawable.transparentcard)
-            }
-            else {
-                outCards.push(flop)
-                binding.curCardActivityFriend.setImageResource(UIRepository.cards[flop]!!)
-            }
+            swapCounts()
+            swapCards()
+            swapAvt()
+            refreshGame()
         }
-        switchPlayers()
-    }
-
-    private fun switchPlayers() {
-        swapCounts()
-        swapCards()
-        swapAvt()
-        refreshGame()
     }
 
     private fun swapAvt() {
