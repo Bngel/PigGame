@@ -28,7 +28,7 @@
 ## 安装
 
 当前最新的`apk`版本为`1.0.0-SNAPSHOT`, 已经发布在`release`中</br>
-<a href="https://github.com/Bngel/PigGame/releases/tag/1.0.0-SNAPSHOT"></a></br>
+<a href="https://github.com/Bngel/PigGame/releases/tag/1.0.0-SNAPSHOT">release</a></br>
 欢迎各位进行下载使用. (联机需要连接校园网)</br>
 
 ## 使用说明
@@ -44,7 +44,7 @@
 - 最后的结算结果以当前玩家视角作为参照. 即 当前/对立 玩家胜利.
 
 ### 3. 人机对战
-- 与[联机对战](#联机对战)相同, 当前`1.0.0-SNAPSHOT`版本的人机只支持翻牌操作. 因此, 很笨.
+- 与联机对战相同, 当前`1.0.0-SNAPSHOT`版本的人机只支持翻牌操作. 因此, 很笨.
 
 ## 维护者
 
