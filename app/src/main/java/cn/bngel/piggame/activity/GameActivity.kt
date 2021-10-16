@@ -404,11 +404,13 @@ class GameActivity : BaseActivity() {
             myCardCount = 0
             for (c in myCards)
                 addMyCard(c)
+            binding.myCountActivityGame.text = myCards.size.toString()
         }
         if (enemyCards.size > 0) {
             enemyCardCount = 0
             for (c in enemyCards)
                 addEnemyCard(c)
+            binding.enemyCountActivityGame.text = enemyCards.size.toString()
         }
     }
 
@@ -443,6 +445,7 @@ class GameActivity : BaseActivity() {
             .limitIconToDefaultSize()
             .title("提示:")
             .content("是否确定退出游戏?")
+            .cancelable(false)
             .positiveText("确定")
             .onPositive() { dialog, _ ->
                 super.onBackPressed()

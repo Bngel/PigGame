@@ -25,33 +25,32 @@
         android:id="@+id/enemy_activity_friend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        tools:ignore="MissingDefaultResource"
+        android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/setting_activity_friend"
         android:layout_toEndOf="@id/turn_activity_friend"
-        android:layout_alignParentTop="true">
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="MissingDefaultResource">
 
         <ImageView
             android:id="@+id/enemy_avt_activity_friend"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/pig_girl"
-            android:layout_margin="20dp"/>
+            android:layout_margin="20dp"
+            android:src="@drawable/pig_girl" />
 
         <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="10dp"
+            android:layout_weight="1"
             android:clickable="false"
             android:focusable="false">
 
             <RelativeLayout
                 android:id="@+id/enemy_cards_activity_friend"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-            </RelativeLayout>
+                android:layout_height="match_parent"></RelativeLayout>
 
         </HorizontalScrollView>
 
@@ -233,6 +232,5 @@
         android:text="翻牌"
         android:textSize="12sp"
         app:sCornersRadius="10dp" />
-
 
 </com.xuexiang.xui.widget.layout.XUIRelativeLayout>

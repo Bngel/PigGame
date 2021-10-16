@@ -232,5 +232,48 @@
         android:textSize="12sp"
         app:sCornersRadius="10dp" />
 
+    <TextView
+        android:id="@+id/enemy_count_text_activity_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="手牌数量: "
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:layout_below="@+id/enemy_activity_game"
+        android:layout_alignLeft="@+id/enemy_activity_game"/>
+
+    <TextView
+        android:id="@+id/enemy_count_activity_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:layout_below="@+id/enemy_activity_game"
+        android:layout_toRightOf="@+id/enemy_count_text_activity_game"/>
+
+    <TextView
+        android:id="@+id/my_count_text_activity_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="手牌数量: "
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:layout_above="@+id/my_activity_game"
+        android:layout_alignLeft="@+id/my_activity_game"/>
+
+    <TextView
+        android:id="@+id/my_count_activity_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:layout_above="@+id/my_activity_game"
+        android:layout_toRightOf="@+id/my_count_text_activity_game"/>
 
 </com.xuexiang.xui.widget.layout.XUIRelativeLayout>

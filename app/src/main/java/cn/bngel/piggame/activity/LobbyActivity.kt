@@ -64,6 +64,22 @@ class LobbyActivity : BaseActivity() {
                 nextGames()
             }
         }
+        binding.quitAccountActivityLobby.setOnClickListener {
+            val build = MaterialDialog.Builder(this)
+                .iconRes(R.drawable.dialog_tip)
+                .limitIconToDefaultSize()
+                .title("提示:")
+                .content("是否确定退出账号?")
+                .positiveText("确定")
+                .cancelable(false)
+                .onPositive() { dialog, _ ->
+                    StatusRepository.clearAccountFromPreferences(this)
+                    finish()
+                }
+                .negativeText("取消")
+                .build()
+            build.show()
+        }
     }
 
     private fun prevGames(){
@@ -194,12 +210,14 @@ class LobbyActivity : BaseActivity() {
                         gameService.getGameUUIDLast(
                             uuid, StatusRepository.userToken, object: DaoEvent {
                                 override fun <T> success(data: DefaultData<T>) {
-                                    val last = data.data as GetGameUUIDLast
-                                    Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
-                                    intent.putExtra("game", last)
-                                    intent.putExtra("uuid", uuid)
-                                    intent.putExtra("host", false)
-                                    startActivity(intent)
+                                    if (!materialDialog.isCancelled) {
+                                        val last = data.data as GetGameUUIDLast
+                                        Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
+                                        intent.putExtra("game", last)
+                                        intent.putExtra("uuid", uuid)
+                                        intent.putExtra("host", false)
+                                        startActivity(intent)
+                                    }
                                 }
 
                                 override fun <T> failure(data: DefaultData<T>?) {
@@ -262,16 +280,18 @@ class LobbyActivity : BaseActivity() {
         materialDialog.show()
         gameService.postGame(private, StatusRepository.userToken, object:DaoEvent {
             override fun <T> success(data: DefaultData<T>) {
-                val game = data.data as PostGame
-                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = ClipData.newPlainText("uuid", game.uuid)
-                clipboard.setPrimaryClip(clipData)
-                Toast.makeText(this@LobbyActivity, "房间代码: {${game.uuid}}\n已复制到剪贴板, 快去分享给好友吧~", Toast.LENGTH_SHORT).show()
-                materialDialog.dismiss()
-                val intent = Intent(this@LobbyActivity, GameActivity::class.java)
-                intent.putExtra("uuid", game.uuid)
-                intent.putExtra("host", true)
-                startActivity(intent)
+                if (!materialDialog.isCancelled) {
+                    val game = data.data as PostGame
+                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData = ClipData.newPlainText("uuid", game.uuid)
+                    clipboard.setPrimaryClip(clipData)
+                    Toast.makeText(this@LobbyActivity, "房间代码: {${game.uuid}}\n已复制到剪贴板, 快去分享给好友吧~", Toast.LENGTH_SHORT).show()
+                    materialDialog.dismiss()
+                    val intent = Intent(this@LobbyActivity, GameActivity::class.java)
+                    intent.putExtra("uuid", game.uuid)
+                    intent.putExtra("host", true)
+                    startActivity(intent)
+                }
             }
 
             override fun <T> failure(data: DefaultData<T>?) {
