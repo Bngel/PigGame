@@ -210,14 +210,12 @@ class LobbyActivity : BaseActivity() {
                         gameService.getGameUUIDLast(
                             uuid, StatusRepository.userToken, object: DaoEvent {
                                 override fun <T> success(data: DefaultData<T>) {
-                                    if (!materialDialog.isCancelled) {
-                                        val last = data.data as GetGameUUIDLast
-                                        Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
-                                        intent.putExtra("game", last)
-                                        intent.putExtra("uuid", uuid)
-                                        intent.putExtra("host", false)
-                                        startActivity(intent)
-                                    }
+                                    val last = data.data as GetGameUUIDLast
+                                    Toast.makeText(this@LobbyActivity, "加入房间成功", Toast.LENGTH_SHORT).show()
+                                    intent.putExtra("game", last)
+                                    intent.putExtra("uuid", uuid)
+                                    intent.putExtra("host", false)
+                                    startActivity(intent)
                                 }
 
                                 override fun <T> failure(data: DefaultData<T>?) {
@@ -280,18 +278,16 @@ class LobbyActivity : BaseActivity() {
         materialDialog.show()
         gameService.postGame(private, StatusRepository.userToken, object:DaoEvent {
             override fun <T> success(data: DefaultData<T>) {
-                if (!materialDialog.isCancelled) {
-                    val game = data.data as PostGame
-                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val clipData = ClipData.newPlainText("uuid", game.uuid)
-                    clipboard.setPrimaryClip(clipData)
-                    Toast.makeText(this@LobbyActivity, "房间代码: {${game.uuid}}\n已复制到剪贴板, 快去分享给好友吧~", Toast.LENGTH_SHORT).show()
-                    materialDialog.dismiss()
-                    val intent = Intent(this@LobbyActivity, GameActivity::class.java)
-                    intent.putExtra("uuid", game.uuid)
-                    intent.putExtra("host", true)
-                    startActivity(intent)
-                }
+                val game = data.data as PostGame
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = ClipData.newPlainText("uuid", game.uuid)
+                clipboard.setPrimaryClip(clipData)
+                Toast.makeText(this@LobbyActivity, "房间代码: {${game.uuid}}\n已复制到剪贴板, 快去分享给好友吧~", Toast.LENGTH_SHORT).show()
+                materialDialog.dismiss()
+                val intent = Intent(this@LobbyActivity, GameActivity::class.java)
+                intent.putExtra("uuid", game.uuid)
+                intent.putExtra("host", true)
+                startActivity(intent)
             }
 
             override fun <T> failure(data: DefaultData<T>?) {
