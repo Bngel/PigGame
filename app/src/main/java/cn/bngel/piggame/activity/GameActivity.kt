@@ -135,9 +135,6 @@ class GameActivity : BaseActivity() {
                         binding.flopCardActivityGame.visibility = View.VISIBLE
                         binding.outCardActivityGame.visibility = View.VISIBLE
                         binding.turnActivityGame.text = "你的回合"
-                        if (isRobot.value == true) {
-                            isRobot.value = true
-                        }
                     }
                     refresh(gameUUIDLast)
                 }
@@ -299,8 +296,9 @@ class GameActivity : BaseActivity() {
                                 myTurn.value = last.your_turn
                             }
                         } else {
-                            if (myTurn.value != last.your_turn)
+                            if (myTurn.value != last.your_turn) {
                                 myTurn.value = last.your_turn
+                            }
                         }
                     }
                 }
@@ -398,7 +396,6 @@ class GameActivity : BaseActivity() {
         binding.myCardsActivityGame.removeAllViews()
         binding.enemyCardsActivityGame.removeAllViews()
         if (myCards.size > 0) {
-            println(myCards.toString())
             myCardCount = 0
             for (c in myCards)
                 addMyCard(c)
@@ -409,6 +406,9 @@ class GameActivity : BaseActivity() {
             for (c in enemyCards)
                 addEnemyCard(c)
             binding.enemyCountActivityGame.text = enemyCardCount.toString()
+        }
+        if (isRobot.value == true) {
+            isRobot.value = true
         }
     }
 
