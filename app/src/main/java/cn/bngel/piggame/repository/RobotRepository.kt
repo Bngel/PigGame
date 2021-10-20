@@ -18,18 +18,16 @@ object RobotRepository {
      *  1. 必胜条件 (满足后只需要不断翻牌即可获得胜利):
      *      x + 2y + z >= 78
      *  2. 牌库仅剩一张时, 假设手牌中存在该花色牌且当前为机器人回合, 且放置区顶非该花色牌. 则打出该花色牌.
-     *  3.  x > 52 - x - y - z (手牌中的牌多于牌堆的牌):
-     *      3.1 有牌则打牌, 使用4.2规则
-     *      3.2 无其他花色牌则翻牌
-     *  4.  x + z < 5 直接翻牌
-     *  5.  x + 1 + z < y  直接翻牌
-     *  6.  x > 5 或 z > 5 只出牌
-     *      6.1 无牌可打, 翻牌
-     *      6.2 有牌可打
-     *          6.2.1 优先出手牌中花色数量最多的牌
+     *  3.  x + z < 5 直接翻牌
+     *  4.  x + 1 + z < y  直接翻牌
+     *  5.  x > 5 或 z > 5 只出牌
+     *      5.1 无牌可打, 翻牌
+     *      5.2 有牌可打
+     *          5.2.1 优先出手牌中花色数量最多的牌
      *  --------------------------------
      */
     fun getRobotCard(x: List<String>, y: List<String>, z: Stack<String>): String {
+        Log.d("z", z.toString())
         val totalPile = ArrayList(UIRepository.cards.keys)
         val curPile = totalPile.clone() as ArrayList<String>
         curPile.removeAll(x)
@@ -37,9 +35,11 @@ object RobotRepository {
         curPile.removeAll(z)
         when {
             x.isEmpty() -> {
+                Log.d("Way", "Way1 翻牌")
                 return ""
             }
             curPile.size == 1 -> {
+                Log.d("Way", "Way2")
                 return when {
                     x.size + 1 + z.size < y.size -> ""
                     z.size > 0 -> whenPileOnlyOne(curPile, x, z.peek()[0])
@@ -49,24 +49,16 @@ object RobotRepository {
             x.size + 2 * y.size + z.size >= 78 -> {
                 return ""
             }
-            x.size > 52 - x.size - y.size - z.size -> {
-                return if (x.isNotEmpty()) {
-                    if (z.size > 0) {
-                        getMostCardFromHand(x, z.peek()[0])
-                    }
-                    else
-                        getMostCardFromHand(x, ' ')
-                } else {
-                    ""
-                }
-            }
             x.size + z.size <= 5 -> {
+                Log.d("Way", "Way3 翻牌")
                 return ""
             }
             x.size + 1 + z.size <= y.size -> {
+                Log.d("Way", "Way4 翻牌")
                 return ""
             }
             x.size > 5 -> {
+                Log.d("Way", "Way5")
                 return if (z.isNotEmpty() && judgeSuitExists(z.peek()[0], x)) {
                     if (z.size > 0)
                         getMostCardFromHand(x, z.peek()[0])
@@ -74,21 +66,23 @@ object RobotRepository {
                         getMostCardFromHand(x, ' ')
                 }
                 else {
-                    ""
+                    getMostCardFromHand(x, ' ')
                 }
             }
             z.size > 5 -> {
-                return if (z.isNotEmpty() && judgeSuitExists(z.peek()[0], x)) {
+                Log.d("Way", "Way6")
+                return if (judgeSuitExists(z.peek()[0], x)) {
                     if (z.size > 0)
                         getMostCardFromHand(x, z.peek()[0])
                     else
                         getMostCardFromHand(x, ' ')
                 }
                 else {
-                    ""
+                    getMostCardFromHand(x, ' ')
                 }
             }
             else -> {
+                Log.d("Way", "Way7 翻牌")
                 return ""
             }
         }

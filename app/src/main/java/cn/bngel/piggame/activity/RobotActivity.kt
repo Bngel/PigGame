@@ -269,6 +269,7 @@ class RobotActivity : BaseActivity() {
 
     private fun robotOperation() {
         val operation = RobotRepository.getRobotCard(robotCards, playerCards, outCards)
+        Log.d("z", outCards.toString())
         if (operation == "") {
                 val flop = remainCards.pop()
                 Log.d("pigFriend", "flopCard: 当前电脑翻开了一张: $flop")

@@ -282,7 +282,7 @@ class GameActivity : BaseActivity() {
     private fun initTimer() {
         val uuid = intent.getStringExtra("uuid")!!
         val timerTask = MyTimerTask(uuid)
-        timer.schedule(timerTask, 0, 200)
+        timer.schedule(timerTask, 0, 100)
     }
 
     inner class MyTimerTask(private val uuid: String): TimerTask() {
@@ -352,14 +352,13 @@ class GameActivity : BaseActivity() {
                             myCards.add(c)
                             myCardCount += 1
                         }
-                        outCards.clear()
                     } else if (player == "1" && host || player == "0" && !host) {
                         for (c in outCards) {
                             enemyCards.add(c)
                             enemyCardCount += 1
                         }
-                        outCards.clear()
                     }
+                    outCards.clear()
                     binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
                 } else {
                     outCards.push(card)
@@ -368,20 +367,19 @@ class GameActivity : BaseActivity() {
             } else if (operation == "1") {
                 if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
                     val host = intent.getBooleanExtra("host", true)
+                    outCards.push(card)
                     if (player == "0" && host || player == "1" && !host) {
-                        outCards.push(card)
                         for (c in outCards) {
                             myCards.add(c)
                             myCardCount += 1
                         }
-                        outCards.clear()
                     } else if (player == "1" && host || player == "0" && !host) {
                         for (c in outCards) {
                             enemyCards.add(c)
                             enemyCardCount += 1
                         }
-                        outCards.clear()
                     }
+                    outCards.clear()
                     binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
                 } else {
                     outCards.push(card)
@@ -390,7 +388,7 @@ class GameActivity : BaseActivity() {
                     if ((player == "0" && host) || (player == "1" && !host)) {
                         myCards.remove(card)
                         myCardCount -= 1
-                    } else if (player == "1" && host || player == "0" && !host) {
+                    } else if ((player == "1" && host) || (player == "0" && !host)) {
                         enemyCards.remove(card)
                         enemyCardCount -= 1
                     }
@@ -404,13 +402,13 @@ class GameActivity : BaseActivity() {
             myCardCount = 0
             for (c in myCards)
                 addMyCard(c)
-            binding.myCountActivityGame.text = myCards.size.toString()
+            binding.myCountActivityGame.text = myCardCount.toString()
         }
         if (enemyCards.size > 0) {
             enemyCardCount = 0
             for (c in enemyCards)
                 addEnemyCard(c)
-            binding.enemyCountActivityGame.text = enemyCards.size.toString()
+            binding.enemyCountActivityGame.text = enemyCardCount.toString()
         }
     }
 
