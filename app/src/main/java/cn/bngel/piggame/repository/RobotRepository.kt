@@ -34,9 +34,11 @@ object RobotRepository {
         curPile.removeAll(z)
         when {
             x.isEmpty() -> {
+                println("Way1")
                 return ""
             }
             curPile.size == 1 -> {
+                println("Way2")
                 return when {
                     x.size + 1 + z.size < y.size -> ""
                     z.size > 0 -> whenPileOnlyOne(curPile, x, z.peek()[0])
@@ -44,15 +46,19 @@ object RobotRepository {
                 }
             }
             x.size + 2 * y.size + z.size >= 78 -> {
+                println("Way3")
                 return ""
             }
             x.size + z.size <= 5 -> {
+                println("Way4")
                 return ""
             }
             x.size + 1 + z.size <= y.size -> {
+                println("Way5")
                 return ""
             }
             x.size > 5 -> {
+                println("Way6")
                 return if (z.isNotEmpty() && judgeSuitExists(z.peek()[0], x)) {
                     if (z.size > 0)
                         getMostCardFromHand(x, z.peek()[0])
@@ -64,6 +70,7 @@ object RobotRepository {
                 }
             }
             z.size > 5 -> {
+                println("Way7")
                 return if (judgeSuitExists(z.peek()[0], x)) {
                     if (z.size > 0)
                         getMostCardFromHand(x, z.peek()[0])
@@ -75,6 +82,7 @@ object RobotRepository {
                 }
             }
             else -> {
+                println("Way8")
                 return ""
             }
         }
@@ -108,6 +116,7 @@ object RobotRepository {
         }
         var res = ""
         val list = listOf(spade, heart, club, diamond).sorted().reversed()
+        var flag = false
         for (l in list) {
             val s = when (l) {
                 spade -> "S"
@@ -121,11 +130,14 @@ object RobotRepository {
                     for (hand in hands) {
                         if (hand[0] == s[0]) {
                             res = hand
+                            flag = true
                             break
                         }
                     }
                 }
             }
+            if (flag)
+                break
         }
         return res
     }
