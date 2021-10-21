@@ -281,7 +281,7 @@ class GameActivity : BaseActivity() {
     private fun initTimer() {
         val uuid = intent.getStringExtra("uuid")!!
         val timerTask = MyTimerTask(uuid)
-        timer.schedule(timerTask, 0, 500)
+        timer.schedule(timerTask, 0, 1000)
     }
 
     inner class MyTimerTask(private val uuid: String): TimerTask() {
@@ -296,28 +296,10 @@ class GameActivity : BaseActivity() {
                             if (gameStarted.value == false) {
                                 gameStarted.value = true
                                 myTurn.value = last.your_turn
-                                val host = intent.getBooleanExtra("host", true)
-                                if (last.your_turn && host || !last.your_turn  && !host) {
-                                    lastPerson = 0
-                                } else if (!last.your_turn && host || last.your_turn && !host) {
-                                    lastPerson = 1
-                                }
                             }
                         } else {
-
-                            val curPerson = last.last_code.split(' ')[0].toInt()
-
-                            println("curPerson: $curPerson")
-                            println("lastPerson: $lastPerson")
-                            println("lock: $lock")
-                            if(!lock) {
-                                if (myTurn.value != last.your_turn) {
-                                    myTurn.value = last.your_turn
-                                    lock = true
-                                }
-                            }
-                            else if (lastPerson != curPerson) {
-                                lock = false
+                            if (myTurn.value != last.your_turn) {
+                                myTurn.value = last.your_turn
                             }
                         }
                     }
