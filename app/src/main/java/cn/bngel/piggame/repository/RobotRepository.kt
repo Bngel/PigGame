@@ -27,7 +27,6 @@ object RobotRepository {
      *  --------------------------------
      */
     fun getRobotCard(x: List<String>, y: List<String>, z: Stack<String>): String {
-        Log.d("z", z.toString())
         val totalPile = ArrayList(UIRepository.cards.keys)
         val curPile = totalPile.clone() as ArrayList<String>
         curPile.removeAll(x)
@@ -35,11 +34,9 @@ object RobotRepository {
         curPile.removeAll(z)
         when {
             x.isEmpty() -> {
-                Log.d("Way", "Way1 翻牌")
                 return ""
             }
             curPile.size == 1 -> {
-                Log.d("Way", "Way2")
                 return when {
                     x.size + 1 + z.size < y.size -> ""
                     z.size > 0 -> whenPileOnlyOne(curPile, x, z.peek()[0])
@@ -50,15 +47,12 @@ object RobotRepository {
                 return ""
             }
             x.size + z.size <= 5 -> {
-                Log.d("Way", "Way3 翻牌")
                 return ""
             }
             x.size + 1 + z.size <= y.size -> {
-                Log.d("Way", "Way4 翻牌")
                 return ""
             }
             x.size > 5 -> {
-                Log.d("Way", "Way5")
                 return if (z.isNotEmpty() && judgeSuitExists(z.peek()[0], x)) {
                     if (z.size > 0)
                         getMostCardFromHand(x, z.peek()[0])
@@ -70,7 +64,6 @@ object RobotRepository {
                 }
             }
             z.size > 5 -> {
-                Log.d("Way", "Way6")
                 return if (judgeSuitExists(z.peek()[0], x)) {
                     if (z.size > 0)
                         getMostCardFromHand(x, z.peek()[0])
@@ -82,7 +75,6 @@ object RobotRepository {
                 }
             }
             else -> {
-                Log.d("Way", "Way7 翻牌")
                 return ""
             }
         }
