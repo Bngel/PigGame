@@ -48,6 +48,8 @@ class GameActivity : BaseActivity() {
     private val timer = Timer()
     private var endGame = false
     private var isRobot = MutableLiveData(false)
+    private var lock = false
+    private var lastPerson = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -279,7 +281,7 @@ class GameActivity : BaseActivity() {
     private fun initTimer() {
         val uuid = intent.getStringExtra("uuid")!!
         val timerTask = MyTimerTask(uuid)
-        timer.schedule(timerTask, 0, 100)
+        timer.schedule(timerTask, 0, 500)
     }
 
     inner class MyTimerTask(private val uuid: String): TimerTask() {
@@ -294,10 +296,28 @@ class GameActivity : BaseActivity() {
                             if (gameStarted.value == false) {
                                 gameStarted.value = true
                                 myTurn.value = last.your_turn
+                                val host = intent.getBooleanExtra("host", true)
+                                if (last.your_turn && host || !last.your_turn  && !host) {
+                                    lastPerson = 0
+                                } else if (!last.your_turn && host || last.your_turn && !host) {
+                                    lastPerson = 1
+                                }
                             }
                         } else {
-                            if (myTurn.value != last.your_turn) {
-                                myTurn.value = last.your_turn
+
+                            val curPerson = last.last_code.split(' ')[0].toInt()
+
+                            println("curPerson: $curPerson")
+                            println("lastPerson: $lastPerson")
+                            println("lock: $lock")
+                            if(!lock) {
+                                if (myTurn.value != last.your_turn) {
+                                    myTurn.value = last.your_turn
+                                    lock = true
+                                }
+                            }
+                            else if (lastPerson != curPerson) {
+                                lock = false
                             }
                         }
                     }
@@ -395,18 +415,20 @@ class GameActivity : BaseActivity() {
         }
         binding.myCardsActivityGame.removeAllViews()
         binding.enemyCardsActivityGame.removeAllViews()
+        myCardCount = 0
+        enemyCardCount = 0
+        println("myCards:" + myCards)
+        println("enemyCards:" + enemyCards)
         if (myCards.size > 0) {
-            myCardCount = 0
             for (c in myCards)
                 addMyCard(c)
-            binding.myCountActivityGame.text = myCardCount.toString()
         }
+        binding.myCountActivityGame.text = myCardCount.toString()
         if (enemyCards.size > 0) {
-            enemyCardCount = 0
             for (c in enemyCards)
                 addEnemyCard(c)
-            binding.enemyCountActivityGame.text = enemyCardCount.toString()
         }
+        binding.enemyCountActivityGame.text = enemyCardCount.toString()
         if (isRobot.value == true) {
             isRobot.value = true
         }

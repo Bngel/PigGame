@@ -138,6 +138,6 @@ object RobotRepository {
                 }
             }
         }
-        return "";
+        return ""
     }
 }
