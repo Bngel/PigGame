@@ -19,6 +19,7 @@ import androidx.lifecycle.MutableLiveData
 import cn.bngel.piggame.R
 import cn.bngel.piggame.dao.DefaultData
 import cn.bngel.piggame.dao.getGameUUIDLast.GetGameUUIDLast
+import cn.bngel.piggame.dao.putGameUUID.PutGameUUID
 import cn.bngel.piggame.databinding.ActivityGameBinding
 import cn.bngel.piggame.repository.RobotRepository
 import cn.bngel.piggame.repository.StatusRepository
@@ -45,11 +46,9 @@ class GameActivity : BaseActivity() {
     private val mediaPlayer = MediaPlayer()
     private var gameStarted = MutableLiveData(false)
     private lateinit var gameUUIDLast: GetGameUUIDLast
-    private val timer = Timer()
+    private var timer = Timer()
     private var endGame = false
     private var isRobot = MutableLiveData(false)
-    private var lock = false
-    private var lastPerson = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +79,8 @@ class GameActivity : BaseActivity() {
                     Log.d("pigTest", "card: $curSelectedCardType")
                     gameService.putGameUUID(1, curSelectedCardType, uuid, StatusRepository.userToken, object: DaoEvent{
                         override fun <T> success(data: DefaultData<T>) {
-                            myCards.remove(curSelectedCardType)
+                            val last = data.data as PutGameUUID
+                            loadMyCode(last)
                         }
 
                         override fun <T> failure(data: DefaultData<T>?) {
@@ -98,6 +98,8 @@ class GameActivity : BaseActivity() {
                 val uuid = intent.getStringExtra("uuid")!!
                 gameService.putGameUUID(0, null, uuid, StatusRepository.userToken, object: DaoEvent{
                     override fun <T> success(data: DefaultData<T>) {
+                        val last = data.data as PutGameUUID
+                        loadMyCode(last)
                     }
 
                     override fun <T> failure(data: DefaultData<T>?) {
@@ -137,8 +139,10 @@ class GameActivity : BaseActivity() {
                         binding.flopCardActivityGame.visibility = View.VISIBLE
                         binding.outCardActivityGame.visibility = View.VISIBLE
                         binding.turnActivityGame.text = "你的回合"
+                        if (isMe && isRobot.value == true) {
+                            isRobot.value = true
+                        }
                     }
-                    refresh(gameUUIDLast)
                 }
             }
             else {
@@ -146,6 +150,7 @@ class GameActivity : BaseActivity() {
             }
         }
         isRobot.observe(this) {
+            println("robot: " + it)
             if (it) {
                 if (myTurn.value == true) {
                     onRobot()
@@ -281,7 +286,12 @@ class GameActivity : BaseActivity() {
     private fun initTimer() {
         val uuid = intent.getStringExtra("uuid")!!
         val timerTask = MyTimerTask(uuid)
+        timer = Timer()
         timer.schedule(timerTask, 0, 1000)
+    }
+
+    private fun dropTimer() {
+        timer.cancel()
     }
 
     inner class MyTimerTask(private val uuid: String): TimerTask() {
@@ -292,14 +302,16 @@ class GameActivity : BaseActivity() {
                         val last = data.data as GetGameUUIDLast
                         gameUUIDLast = last
                         Log.d("pigHandler", (data.data as GetGameUUIDLast).toString())
-                        if (last.last_msg == "对局刚开始") {
-                            if (gameStarted.value == false) {
-                                gameStarted.value = true
-                                myTurn.value = last.your_turn
-                            }
+                        if (gameStarted.value == false) {
+                            gameStarted.value = true
+                            myTurn.value = last.your_turn
                         } else {
-                            if (myTurn.value != last.your_turn) {
-                                myTurn.value = last.your_turn
+                            if (gameStarted.value == true) {
+                                if (last.your_turn)
+                                    loadEnemyCode(last)
+                                if (myTurn.value != last.your_turn) {
+                                    myTurn.value = last.your_turn
+                                }
                             }
                         }
                     }
@@ -307,7 +319,8 @@ class GameActivity : BaseActivity() {
                 override fun <T> failure(data: DefaultData<T>?) {
                     if (data?.code == 400 && !endGame) {
                         endGame = true
-                        refresh(gameUUIDLast)
+                        loadEnemyCode(gameUUIDLast)
+                        refresh()
                         val msg = if (myCardCount < enemyCardCount) "你赢了" else {
                             if (myCardCount == enemyCardCount)
                                 "平局"
@@ -336,71 +349,11 @@ class GameActivity : BaseActivity() {
         }
     }
 
-    private fun refresh(last: GetGameUUIDLast) {
-        if (last.last_code != "") {
-            val code = last.last_code.split(" ")
-            val player = code[0]
-            val operation = code[1]
-            val card = code[2]
-
-            if (operation == "0") {
-                if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
-                    outCards.push(card)
-                    val host = intent.getBooleanExtra("host", false)
-                    if (player == "0" && host || player == "1" && !host) {
-                        for (c in outCards) {
-                            myCards.add(c)
-                            myCardCount += 1
-                        }
-                    } else if (player == "1" && host || player == "0" && !host) {
-                        for (c in outCards) {
-                            enemyCards.add(c)
-                            enemyCardCount += 1
-                        }
-                    }
-                    outCards.clear()
-                    binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
-                } else {
-                    outCards.push(card)
-                    binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
-                }
-            } else if (operation == "1") {
-                if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
-                    val host = intent.getBooleanExtra("host", true)
-                    outCards.push(card)
-                    if (player == "0" && host || player == "1" && !host) {
-                        for (c in outCards) {
-                            myCards.add(c)
-                            myCardCount += 1
-                        }
-                    } else if (player == "1" && host || player == "0" && !host) {
-                        for (c in outCards) {
-                            enemyCards.add(c)
-                            enemyCardCount += 1
-                        }
-                    }
-                    outCards.clear()
-                    binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
-                } else {
-                    outCards.push(card)
-                    binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
-                    val host = intent.getBooleanExtra("host", true)
-                    if ((player == "0" && host) || (player == "1" && !host)) {
-                        myCards.remove(card)
-                        myCardCount -= 1
-                    } else if ((player == "1" && host) || (player == "0" && !host)) {
-                        enemyCards.remove(card)
-                        enemyCardCount -= 1
-                    }
-                }
-            }
-        }
+    private fun refresh() {
         binding.myCardsActivityGame.removeAllViews()
         binding.enemyCardsActivityGame.removeAllViews()
         myCardCount = 0
         enemyCardCount = 0
-        println("myCards:" + myCards)
-        println("enemyCards:" + enemyCards)
         if (myCards.size > 0) {
             for (c in myCards)
                 addMyCard(c)
@@ -411,9 +364,6 @@ class GameActivity : BaseActivity() {
                 addEnemyCard(c)
         }
         binding.enemyCountActivityGame.text = enemyCardCount.toString()
-        if (isRobot.value == true) {
-            isRobot.value = true
-        }
     }
 
     private fun onRobot() {
@@ -423,6 +373,8 @@ class GameActivity : BaseActivity() {
         if (card == "") {
             gameService.putGameUUID(0, null, uuid, StatusRepository.userToken, object: DaoEvent{
                 override fun <T> success(data: DefaultData<T>) {
+                    val last = data.data as PutGameUUID
+                    loadMyCode(last)
                 }
                 override fun <T> failure(data: DefaultData<T>?) {
                     Toast.makeText(this@GameActivity, "机器人翻牌失败, 请重试", Toast.LENGTH_SHORT).show()
@@ -432,7 +384,8 @@ class GameActivity : BaseActivity() {
         else {
             gameService.putGameUUID(1, card, uuid, StatusRepository.userToken, object: DaoEvent{
                 override fun <T> success(data: DefaultData<T>) {
-                    myCards.remove(card)
+                    val last = data.data as PutGameUUID
+                    loadMyCode(last)
                 }
                 override fun <T> failure(data: DefaultData<T>?) {
                     Toast.makeText(this@GameActivity, "机器人出牌失败, 请重试", Toast.LENGTH_SHORT).show()
@@ -455,5 +408,89 @@ class GameActivity : BaseActivity() {
             .negativeText("取消")
             .build()
         build.show()
+    }
+
+    private fun loadMyCode(last: PutGameUUID) {
+        println("loadMyCode")
+        if (last.last_code != "") {
+            val code = last.last_code.split(" ")
+            val player = code[0]
+            val operation = code[1]
+            val card = code[2]
+            if (operation == "0") {
+                if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                    outCards.push(card)
+                    for (c in outCards) {
+                        myCards.add(c)
+                        myCardCount += 1
+                    }
+                    outCards.clear()
+                    binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
+                } else {
+                    outCards.push(card)
+                    binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
+                }
+            } else if (operation == "1") {
+                if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                    outCards.push(card)
+                    for (c in outCards) {
+                        myCards.add(c)
+                        myCardCount += 1
+                    }
+                    outCards.clear()
+                    binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
+                } else {
+                    outCards.push(card)
+                    binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
+                    myCards.remove(card)
+                    myCardCount -= 1
+                }
+            }
+            refresh()
+            initTimer()
+        }
+    }
+
+    private fun loadEnemyCode(last: GetGameUUIDLast) {
+        println("loadEnemyCode")
+        dropTimer()
+        if (last.last_code != "") {
+            val code = last.last_code.split(" ")
+            val player = code[0]
+            val operation = code[1]
+            val card = code[2]
+            if (last.your_turn) {
+                if (operation == "0") {
+                    if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                        outCards.push(card)
+                        for (c in outCards) {
+                            enemyCards.add(c)
+                            enemyCardCount += 1
+                        }
+                        outCards.clear()
+                        binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
+                    } else {
+                        outCards.push(card)
+                        binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
+                    }
+                } else if (operation == "1") {
+                    if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                        outCards.push(card)
+                        for (c in outCards) {
+                            enemyCards.add(c)
+                            enemyCardCount += 1
+                        }
+                        outCards.clear()
+                        binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
+                    } else {
+                        outCards.push(card)
+                        binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
+                        enemyCards.remove(card)
+                        enemyCardCount -= 1
+                    }
+                }
+                refresh()
+            }
+        }
     }
 }

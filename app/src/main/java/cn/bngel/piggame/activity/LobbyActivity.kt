@@ -219,6 +219,7 @@ class LobbyActivity : BaseActivity() {
                                 }
 
                                 override fun <T> failure(data: DefaultData<T>?) {
+                                    println(data)
                                     if (data?.code == 403) {
                                         Toast.makeText(
                                             this@LobbyActivity,
