@@ -84,7 +84,10 @@ class GameActivity : BaseActivity() {
                         }
 
                         override fun <T> failure(data: DefaultData<T>?) {
-                            Toast.makeText(this@GameActivity, "出牌失败, 请重试", Toast.LENGTH_SHORT).show()
+                            if (data?.code == 401 && data.message == "鉴权失败")
+                                initTimer()
+                            else
+                                Toast.makeText(this@GameActivity, "出牌失败, 请重试", Toast.LENGTH_SHORT).show()
                         }
                     })
                 }
@@ -319,7 +322,6 @@ class GameActivity : BaseActivity() {
                 override fun <T> failure(data: DefaultData<T>?) {
                     if (data?.code == 400 && !endGame) {
                         endGame = true
-                        loadEnemyCode(gameUUIDLast)
                         refresh()
                         val msg = if (myCardCount < enemyCardCount) "你赢了" else {
                             if (myCardCount == enemyCardCount)
@@ -431,6 +433,7 @@ class GameActivity : BaseActivity() {
                     binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
                 }
             } else if (operation == "1") {
+                myCards.remove(card)
                 if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
                     outCards.push(card)
                     for (c in outCards) {
@@ -442,7 +445,6 @@ class GameActivity : BaseActivity() {
                 } else {
                     outCards.push(card)
                     binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
-                    myCards.remove(card)
                     myCardCount -= 1
                 }
             }
