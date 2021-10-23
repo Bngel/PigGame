@@ -18,6 +18,7 @@ import androidx.core.view.size
 import androidx.lifecycle.MutableLiveData
 import cn.bngel.piggame.R
 import cn.bngel.piggame.dao.DefaultData
+import cn.bngel.piggame.dao.getGameUUID.GetGameUUID
 import cn.bngel.piggame.dao.getGameUUIDLast.GetGameUUIDLast
 import cn.bngel.piggame.dao.putGameUUID.PutGameUUID
 import cn.bngel.piggame.databinding.ActivityGameBinding
@@ -46,7 +47,7 @@ class GameActivity : BaseActivity() {
     private val mediaPlayer = MediaPlayer()
     private var gameStarted = MutableLiveData(false)
     private lateinit var gameUUIDLast: GetGameUUIDLast
-    private var timer = Timer()
+    private lateinit var timer: Timer
     private var endGame = false
     private var isRobot = MutableLiveData(false)
 
@@ -133,18 +134,18 @@ class GameActivity : BaseActivity() {
         gameStarted.observe(this) { started ->
             if (started) {
                 myTurn.observe(this) { isMe ->
-                    if (!isMe) {
-                        binding.flopCardActivityGame.visibility = View.INVISIBLE
-                        binding.outCardActivityGame.visibility = View.INVISIBLE
-                        binding.turnActivityGame.text = "对方回合"
-                    }
-                    else {
+                    if (isMe) {
                         binding.flopCardActivityGame.visibility = View.VISIBLE
                         binding.outCardActivityGame.visibility = View.VISIBLE
                         binding.turnActivityGame.text = "你的回合"
                         if (isMe && isRobot.value == true) {
                             isRobot.value = true
                         }
+                    }
+                    else {
+                        binding.flopCardActivityGame.visibility = View.INVISIBLE
+                        binding.outCardActivityGame.visibility = View.INVISIBLE
+                        binding.turnActivityGame.text = "对方回合"
                     }
                 }
             }
@@ -308,6 +309,9 @@ class GameActivity : BaseActivity() {
                         if (gameStarted.value == false) {
                             gameStarted.value = true
                             myTurn.value = last.your_turn
+                            if (last.your_turn) {
+                                dropTimer()
+                            }
                         } else {
                             if (gameStarted.value == true) {
                                 if (last.your_turn)
@@ -323,28 +327,44 @@ class GameActivity : BaseActivity() {
                     if (data?.code == 400 && !endGame) {
                         endGame = true
                         refresh()
-                        val msg = if (myCardCount < enemyCardCount) "你赢了" else {
-                            if (myCardCount == enemyCardCount)
-                                "平局"
-                            else
-                                "你输了"
-                        }
-                        val build = MaterialDialog.Builder(this@GameActivity)
-                            .iconRes(R.drawable.dialog_tip)
-                            .limitIconToDefaultSize()
-                            .title("提示:")
-                            .content("游戏已结束\n$msg")
-                            .positiveText("退出对局")
-                            .onPositive() { dialog, _ ->
-                                dialog.dismiss()
+                        gameService.getGameUUID(uuid, StatusRepository.userToken, object: DaoEvent {
+                            override fun <T> success(data: DefaultData<T>) {
+                                val last = data.data as GetGameUUID
+                                if (myTurn.value == false) {
+                                    val info = GetGameUUIDLast(last.last, "", true)
+                                    loadEnemyCode(info)
+                                }
+                                val msg = if (myCardCount < enemyCardCount) "你赢了" else {
+                                    if (myCardCount == enemyCardCount)
+                                        "平局"
+                                    else
+                                        "你输了"
+                                }
+                                val build = MaterialDialog.Builder(this@GameActivity)
+                                    .iconRes(R.drawable.dialog_tip)
+                                    .limitIconToDefaultSize()
+                                    .title("提示:")
+                                    .content("游戏已结束\n$msg")
+                                    .positiveText("退出对局")
+                                    .onPositive() { dialog, _ ->
+                                        dialog.dismiss()
+                                        finish()
+                                    }
+                                    .cancelable(false)
+                                    .cancelListener {
+                                        finish()
+                                    }
+                                    .build()
+                                build.show()
+                            }
+
+                            override fun <T> failure(data: DefaultData<T>?) {
+                                Toast.makeText(this@GameActivity, "获取对局结束信息失败", Toast.LENGTH_SHORT).show()
                                 finish()
                             }
-                            .cancelable(false)
-                            .cancelListener {
-                                finish()
-                            }
-                            .build()
-                        build.show()
+
+                        })
+
                     }
                 }
             })
@@ -413,7 +433,7 @@ class GameActivity : BaseActivity() {
     }
 
     private fun loadMyCode(last: PutGameUUID) {
-        println("loadMyCode")
+        println("enemy: " + enemyCards)
         if (last.last_code != "") {
             val code = last.last_code.split(" ")
             val player = code[0]
@@ -449,12 +469,12 @@ class GameActivity : BaseActivity() {
                 }
             }
             refresh()
-            initTimer()
         }
+        initTimer()
     }
 
     private fun loadEnemyCode(last: GetGameUUIDLast) {
-        println("loadEnemyCode")
+        println("myCards: " + myCards)
         dropTimer()
         if (last.last_code != "") {
             val code = last.last_code.split(" ")
@@ -477,6 +497,7 @@ class GameActivity : BaseActivity() {
                     }
                 } else if (operation == "1") {
                     if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                        enemyCards.remove(card)
                         outCards.push(card)
                         for (c in outCards) {
                             enemyCards.add(c)
@@ -491,8 +512,8 @@ class GameActivity : BaseActivity() {
                         enemyCardCount -= 1
                     }
                 }
-                refresh()
             }
+            refresh()
         }
     }
 }
