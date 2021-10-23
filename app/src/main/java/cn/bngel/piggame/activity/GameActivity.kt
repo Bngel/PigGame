@@ -129,6 +129,9 @@ class GameActivity : BaseActivity() {
                 binding.flopCardActivityGame.isClickable = false
                 binding.outCardActivityGame.isClickable = false
                 isRobot.value = true
+                if (myTurn.value == true) {
+                    onRobot()
+                }
             }
         }
         gameStarted.observe(this) { started ->
