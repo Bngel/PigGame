@@ -138,9 +138,6 @@ class GameActivity : BaseActivity() {
                         binding.flopCardActivityGame.visibility = View.VISIBLE
                         binding.outCardActivityGame.visibility = View.VISIBLE
                         binding.turnActivityGame.text = "你的回合"
-                        if (isMe && isRobot.value == true) {
-                            isRobot.value = true
-                        }
                     }
                     else {
                         binding.flopCardActivityGame.visibility = View.INVISIBLE
@@ -151,14 +148,6 @@ class GameActivity : BaseActivity() {
             }
             else {
                 binding.turnActivityGame.text = "对局未开始"
-            }
-        }
-        isRobot.observe(this) {
-            println("robot: " + it)
-            if (it) {
-                if (myTurn.value == true) {
-                    onRobot()
-                }
             }
         }
         playBGM()
@@ -310,7 +299,7 @@ class GameActivity : BaseActivity() {
                             gameStarted.value = true
                             myTurn.value = last.your_turn
                             if (last.your_turn) {
-                                dropTimer()
+                                loadEnemyCode(last)
                             }
                         } else {
                             if (gameStarted.value == true) {
@@ -433,7 +422,6 @@ class GameActivity : BaseActivity() {
     }
 
     private fun loadMyCode(last: PutGameUUID) {
-        println("enemy: " + enemyCards)
         if (last.last_code != "") {
             val code = last.last_code.split(" ")
             val player = code[0]
@@ -474,7 +462,6 @@ class GameActivity : BaseActivity() {
     }
 
     private fun loadEnemyCode(last: GetGameUUIDLast) {
-        println("myCards: " + myCards)
         dropTimer()
         if (last.last_code != "") {
             val code = last.last_code.split(" ")
@@ -513,7 +500,10 @@ class GameActivity : BaseActivity() {
                     }
                 }
             }
-            refresh()
+        }
+        refresh()
+        if (isRobot.value == true) {
+            onRobot()
         }
     }
 }

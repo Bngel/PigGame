@@ -107,7 +107,6 @@ class LobbyActivity : BaseActivity() {
             }
 
             override fun <T> failure(data: DefaultData<T>?) {
-                println(data?.message)
                 loadingDialog.dismiss()
             }
 
@@ -150,7 +149,6 @@ class LobbyActivity : BaseActivity() {
                 println(data?.message)
                 loadingDialog.dismiss()
             }
-
         })
     }
 
