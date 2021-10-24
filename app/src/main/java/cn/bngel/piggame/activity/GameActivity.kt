@@ -306,10 +306,10 @@ class GameActivity : BaseActivity() {
                             }
                         } else {
                             if (gameStarted.value == true) {
-                                if (last.your_turn)
-                                    loadEnemyCode(last)
                                 if (myTurn.value != last.your_turn) {
                                     myTurn.value = last.your_turn
+                                    if (last.your_turn)
+                                        loadEnemyCode(last)
                                 }
                             }
                         }
@@ -459,8 +459,8 @@ class GameActivity : BaseActivity() {
                     myCardCount -= 1
                 }
             }
-            refresh()
         }
+        refresh()
         initTimer()
     }
 
@@ -503,9 +503,9 @@ class GameActivity : BaseActivity() {
                     }
                 }
             }
+            refresh()
         }
-        refresh()
-        if (isRobot.value == true) {
+        if (isRobot.value == true && myTurn.value == true) {
             onRobot()
         }
     }
