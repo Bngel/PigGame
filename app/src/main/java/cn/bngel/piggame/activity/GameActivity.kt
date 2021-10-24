@@ -468,42 +468,44 @@ class GameActivity : BaseActivity() {
         dropTimer()
         if (last.last_code != "") {
             val code = last.last_code.split(" ")
-            val player = code[0]
-            val operation = code[1]
-            val card = code[2]
-            if (last.your_turn) {
-                if (operation == "0") {
-                    if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
-                        outCards.push(card)
-                        for (c in outCards) {
-                            enemyCards.add(c)
-                            enemyCardCount += 1
+            if (code.size == 3) {
+                val player = code[0]
+                val operation = code[1]
+                val card = code[2]
+                if (last.your_turn) {
+                    if (operation == "0") {
+                        if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                            outCards.push(card)
+                            for (c in outCards) {
+                                enemyCards.add(c)
+                                enemyCardCount += 1
+                            }
+                            outCards.clear()
+                            binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
+                        } else {
+                            outCards.push(card)
+                            binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
                         }
-                        outCards.clear()
-                        binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
-                    } else {
-                        outCards.push(card)
-                        binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
-                    }
-                } else if (operation == "1") {
-                    if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
-                        enemyCards.remove(card)
-                        outCards.push(card)
-                        for (c in outCards) {
-                            enemyCards.add(c)
-                            enemyCardCount += 1
+                    } else if (operation == "1") {
+                        if (outCards.size > 0 && card[0] == outCards.peek()[0]) {
+                            enemyCards.remove(card)
+                            outCards.push(card)
+                            for (c in outCards) {
+                                enemyCards.add(c)
+                                enemyCardCount += 1
+                            }
+                            outCards.clear()
+                            binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
+                        } else {
+                            outCards.push(card)
+                            binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
+                            enemyCards.remove(card)
+                            enemyCardCount -= 1
                         }
-                        outCards.clear()
-                        binding.curCardActivityGame.setImageResource(R.drawable.transparentcard)
-                    } else {
-                        outCards.push(card)
-                        binding.curCardActivityGame.setImageResource(UIRepository.cards[card]!!)
-                        enemyCards.remove(card)
-                        enemyCardCount -= 1
                     }
                 }
+                refresh()
             }
-            refresh()
         }
         if (isRobot.value == true && myTurn.value == true) {
             onRobot()
