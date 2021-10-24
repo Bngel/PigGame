@@ -28,7 +28,7 @@
 ## 安装
 
 当前最新的`apk`版本为`1.1.1-RELEASE`, 已经发布在`release`中</br>
-<a href="https://github.com/Bngel/PigGame/releases/tag/1.1.0-RELEASE">release</a></br>
+<a href="https://github.com/Bngel/PigGame/releases/tag/1.1.1-RELEASE">release</a></br>
 欢迎各位进行下载使用. (联机需要连接校园网)</br>
 
 ## 使用说明
